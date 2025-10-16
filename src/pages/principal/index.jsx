@@ -696,10 +696,10 @@ function Principal() {
 
       {menuPrincipalAberto && (
         <MenuPrincipalSuspenso onClick={(e) => e.stopPropagation()}>
-          <MenuPrincipalItem onClick={() => navigate('/arquivos')}>
+          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/arquivos')}>
             Arquivados
           </MenuPrincipalItem>
-          <MenuPrincipalItem onClick={() => navigate('/total-dia')}>
+          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/total-dia')}>
             Total do Dia
           </MenuPrincipalItem>
         </MenuPrincipalSuspenso>
@@ -709,7 +709,7 @@ function Principal() {
         <QuadradoComanda 
           key={comanda.id}
           index={index}
-          onClick={() => !editingId && navigate(`/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
+          onClick={() => !editingId && navigate(`/comandas_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
         >
           {editingId === comanda.id ? (
             <InputEdicao
