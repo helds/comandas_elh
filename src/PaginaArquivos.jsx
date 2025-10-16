@@ -264,7 +264,7 @@ function PaginaArquivos() {
                           <QuadradoComanda
                             key={comanda.id}
                             index={index}
-                            onClick={() => navigate(`/comanda_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
+                            onClick={() => navigate(`/comandas_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
                           >
                             {comanda.nome}
                             <InfoComanda>
