@@ -7,10 +7,10 @@ import TotalDias from '../../TotalDia';
 function AppRouter() {
   return (
       <Routes>
-        <Route path="/" element={<Principal />} />
-        <Route path="/comanda/:id" element={<ComandaDetalhe />} /> 
-        <Route path="/arquivos" element={<PaginaArquivos />} /> 
-        <Route path="/total-dia" element={<TotalDias />} />
+        <Route path="/comandas_elh" element={<Principal />} />
+        <Route path="/comandas_elh/comanda/:id" element={<ComandaDetalhe />} /> 
+        <Route path="/comandas_elh/arquivos" element={<PaginaArquivos />} /> 
+        <Route path="/comandas_elh/total-dia" element={<TotalDias />} />
       </Routes>
   );
 }
