@@ -520,7 +520,7 @@ function TotalDias() {
     <Fundo>
       <Barra>
         <Titulo>TOTAL DO DIA</Titulo>
-        <Botoes onClick={() => navigate('/')}>
+        <Botoes onClick={() => navigate('/comandas_elh/')}>
           <StyledVoltar />
         </Botoes>
       </Barra>

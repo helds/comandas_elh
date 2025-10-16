@@ -239,7 +239,7 @@ function PaginaArquivos() {
   return (
     <Fundo>
       <Barra>
-        <Botoes onClick={() => navigate('/')}>
+        <Botoes onClick={() => navigate('/comandas_elh/')}>
           <StyledVoltar />
         </Botoes>
         <Titulo>ARQUIVOS</Titulo>
