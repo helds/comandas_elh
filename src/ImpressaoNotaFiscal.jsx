@@ -23,7 +23,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
         <style>
           @media print {
             @page {
-              size: 80mm auto;
+              size: 58mm auto;
               margin: 5mm;
             }
             body {

@@ -469,8 +469,8 @@ function TotalDias() {
             <span>Total de Comandas:</span>
             <span>${Object.values(totaisPorDia).reduce((soma, dia) => soma + dia.comandas.length, 0)}</span>
           </div>
-          <div class="linha-resumo">
-            <span>Subtotal Geral:</span>
+          <div class="linha-resumo total">
+            <span>SUBTOTAL GERAL:</span>
             <span>${formatarValor(totalGeral)}</span>
           </div>
           <div class="linha-resumo">
@@ -485,8 +485,8 @@ function TotalDias() {
             <span>Taxa Cartão (5%):</span>
             <span>${formatarValor(totalComTaxa * 0.05)}</span>
           </div>
-          <div class="linha-resumo total">
-            <span>TOTAL COM CARTÃO:</span>
+          <div class="linha-resumo">
+            <span>Total com Cartão:</span>
             <span>${formatarValor(totalComCartao)}</span>
           </div>
         </div>
@@ -543,16 +543,16 @@ function TotalDias() {
                 </ValorResumo>
               </LinhaResumo>
               <LinhaResumo>
-                <LabelResumo>Subtotal:</LabelResumo>
-                <ValorResumo>{formatarValor(totalGeral)}</ValorResumo>
+                <LabelResumo className="total"> SUBTOTAL:</LabelResumo>
+                <ValorResumo className="total"> {formatarValor(totalGeral)}</ValorResumo>
               </LinhaResumo>
               <LinhaResumo>
                 <LabelResumo>Com Taxa (10%):</LabelResumo>
                 <ValorResumo>{formatarValor(totalComTaxa)}</ValorResumo>
               </LinhaResumo>
               <LinhaResumo>
-                <LabelResumo className="total">Com Cartão (5%):</LabelResumo>
-                <ValorResumo className="total">{formatarValor(totalComCartao)}</ValorResumo>
+                <LabelResumo> Com Cartão (5%):</LabelResumo>
+                <ValorResumo> {formatarValor(totalComCartao)}</ValorResumo>
               </LinhaResumo>
               
               <BotaoImprimir onClick={imprimirRelatorio}>

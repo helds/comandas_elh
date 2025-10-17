@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 import { useFiltroBusca } from './useFiltroBusca';
@@ -115,10 +115,21 @@ const SugestaoItem = styled.li`
   font-size: 18pt;
   color: #333;
   text-align: left;
+  transition: background-color 0.15s ease;
 
   &:hover {
     background-color: #f0f0f0;
   }
+
+  ${props => props.$selected && `
+    background-color: #0abf00;
+    color: #fffef7;
+    font-weight: bold;
+    
+    &:hover {
+      background-color: #0abf00;
+    }
+  `}
 `;
 
 /* ---------- Componente principal ---------- */
@@ -154,7 +165,11 @@ function TabelaComanda({ onTotalChange, comandaId }) {
   
   const [linhaAtivaIndex, setLinhaAtivaIndex] = useState(null);
   const [editingCell, setEditingCell] = useState(null);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
   const { termoBusca, setTermoBusca, resultadosFiltrados } = useFiltroBusca(cardapio);
+  
+  const inputRef = useRef(null);
+  const sugestoesRef = useRef(null);
 
   // Salva os dados no localStorage sempre que as linhas mudarem
   useEffect(() => {
@@ -177,6 +192,62 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     }, 0);
     if (onTotalChange) onTotalChange(total);
   }, [linhas, onTotalChange]);
+
+  // Reset do índice selecionado quando os resultados mudam
+  useEffect(() => {
+    setSelectedSuggestionIndex(0);
+  }, [resultadosFiltrados]);
+
+  // Scroll automático para item selecionado no menu
+  useEffect(() => {
+    if (sugestoesRef.current && resultadosFiltrados.length > 0) {
+      const selectedElement = sugestoesRef.current.children[selectedSuggestionIndex];
+      if (selectedElement) {
+        selectedElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest'
+        });
+      }
+    }
+  }, [selectedSuggestionIndex, resultadosFiltrados]);
+
+  // Gerenciamento de teclado para o menu de sugestões
+  const handleKeyDown = (e, i) => {
+    // Só processa setas e Enter se o menu estiver visível
+    if (linhaAtivaIndex === i && resultadosFiltrados.length > 0) {
+      switch(e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          setSelectedSuggestionIndex(prev => 
+            (prev + 1) % resultadosFiltrados.length
+          );
+          break;
+        
+        case 'ArrowUp':
+          e.preventDefault();
+          setSelectedSuggestionIndex(prev => 
+            (prev - 1 + resultadosFiltrados.length) % resultadosFiltrados.length
+          );
+          break;
+        
+        case 'Enter':
+          e.preventDefault();
+          if (resultadosFiltrados[selectedSuggestionIndex]) {
+            selecionarProduto(i, resultadosFiltrados[selectedSuggestionIndex]);
+          }
+          break;
+        
+        case 'Escape':
+          e.preventDefault();
+          setLinhaAtivaIndex(null);
+          setTermoBusca('');
+          break;
+        
+        default:
+          break;
+      }
+    }
+  };
 
   const limparLinha = (i) => {
     setLinhas((old) => old.map((l, idx) => (idx === i ? { ...linhaVazia } : l)));
@@ -204,6 +275,7 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     );
     setTermoBusca('');
     setLinhaAtivaIndex(null);
+    setSelectedSuggestionIndex(0);
   };
 
   const colunas = useMemo(
@@ -294,11 +366,13 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                     <CorpoCell key={cell.id}>
                       <InputContainer>
                         <input
+                          ref={linhaAtivaIndex === i ? inputRef : null}
                           type="text"
                           value={linhaAtivaIndex === i ? termoBusca : linhas[i].produto}
                           onFocus={() => {
                             setLinhaAtivaIndex(i);
                             setTermoBusca(linhas[i].produto || '');
+                            setSelectedSuggestionIndex(0);
                           }}
                           onChange={(e) => {
                             const valor = e.target.value;
@@ -306,14 +380,17 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                             if (valor === '') limparLinha(i);
                             else atualizarCelula(i, 'produto', valor);
                           }}
+                          onKeyDown={(e) => handleKeyDown(e, i)}
                           onBlur={() => setTimeout(() => setLinhaAtivaIndex(null), 150)}
                         />
                         {linhaAtivaIndex === i && resultadosFiltrados.length > 0 && (
-                          <SugestoesLista>
-                            {resultadosFiltrados.map((item) => (
+                          <SugestoesLista ref={sugestoesRef}>
+                            {resultadosFiltrados.map((item, index) => (
                               <SugestaoItem
                                 key={item.id}
+                                $selected={index === selectedSuggestionIndex}
                                 onMouseDown={() => selecionarProduto(i, item)}
+                                onMouseEnter={() => setSelectedSuggestionIndex(index)}
                               >
                                 {item.nome}
                               </SugestaoItem>
