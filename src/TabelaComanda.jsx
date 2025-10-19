@@ -4,7 +4,7 @@ import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-tabl
 import { useFiltroBusca } from './useFiltroBusca';
 import { cardapio } from './database';
 
-/* ---------- Estilos ---------- */
+/* ---------- Estilos (sem alterações) ---------- */
 
 const TabelaContainer = styled.div`
   width: 100%;
@@ -170,6 +170,11 @@ function TabelaComanda({ onTotalChange, comandaId }) {
   
   const inputRef = useRef(null);
   const sugestoesRef = useRef(null);
+  
+  // ==========================================================
+  // AQUI: 1. Adicionamos uma ref para guardar o timeout do blur
+  // ==========================================================
+  const blurTimeoutRef = useRef(null);
 
   // Salva os dados no localStorage sempre que as linhas mudarem
   useEffect(() => {
@@ -370,6 +375,11 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                           type="text"
                           value={linhaAtivaIndex === i ? termoBusca : linhas[i].produto}
                           onFocus={() => {
+                            // ==================================================
+                            // AQUI: 2. Limpamos o timeout de blur anterior
+                            // ==================================================
+                            clearTimeout(blurTimeoutRef.current);
+                            
                             setLinhaAtivaIndex(i);
                             setTermoBusca(linhas[i].produto || '');
                             setSelectedSuggestionIndex(0);
@@ -381,7 +391,14 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                             else atualizarCelula(i, 'produto', valor);
                           }}
                           onKeyDown={(e) => handleKeyDown(e, i)}
-                          onBlur={() => setTimeout(() => setLinhaAtivaIndex(null), 150)}
+                          // ====================================================================
+                          // AQUI: 3. Guardamos o ID do novo timeout quando o blur ocorre
+                          // ====================================================================
+                          onBlur={() => {
+                            blurTimeoutRef.current = setTimeout(() => {
+                              setLinhaAtivaIndex(null);
+                            }, 150);
+                          }}
                         />
                         {linhaAtivaIndex === i && resultadosFiltrados.length > 0 && (
                           <SugestoesLista ref={sugestoesRef}>

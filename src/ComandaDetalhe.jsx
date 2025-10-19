@@ -46,19 +46,30 @@ const ComandaDetalhe = () => {
 
   return (
     <Container>
+      {/* --- JSX ALTERADO --- */}
+      {/* A ordem dos elementos agora importa */}
       <Barra>
-        <Titulo>{nomeCliente.toUpperCase()}</Titulo>
-        <Botoes onClick={() => window.history.back()}>
-          <StyledVoltar />
-        </Botoes>
-        <ImpressaoNotaFiscal
-          nomeCliente={nomeCliente}
-          comandaId={comandaId}
-          linhas={linhasComanda}
-          totalComanda={totalComanda}
-        />
+        {/* 1. Botão de Voltar (na esquerda) */}
+        <LadoBarra>
+          <Botoes onClick={() => window.history.back()}>
+            <StyledVoltar />
+          </Botoes>
+        </LadoBarra>
 
+        {/* 2. Título (centralizado) */}
+        <Titulo>{nomeCliente.toUpperCase()}</Titulo>
+
+        {/* 3. Botão de Imprimir (na direita) */}
+        <LadoBarraDireito>
+          <ImpressaoNotaFiscal
+            nomeCliente={nomeCliente}
+            comandaId={comandaId}
+            linhas={linhasComanda}
+            totalComanda={totalComanda}
+          />
+        </LadoBarraDireito>
       </Barra>
+      {/* --- FIM DAS ALTERAÇÕES NO JSX --- */}
 
       <TabelaContainer>
         {/* ✅ Passa o comandaId para a tabela poder salvar/carregar dados únicos */}
@@ -148,7 +159,26 @@ const Barra = styled.div`
   z-index: 10;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* --- ALTERADO --- */
+  /* Removemos o justify-content para o flex-grow do Título funcionar */
+  /* justify-content: center; */ 
+`;
+
+/* --- NOVO --- */
+/* Criamos "caixas" laterais para os botões */
+const LadoBarra = styled.div`
+  flex: 1; /* Ocupa 1 parte do espaço */
+  display: flex;
+  justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+  padding-left: 50px; /* Mantém o espaçamento original do botão voltar */
+`;
+
+/* --- NOVO --- */
+/* Uma variação da caixa lateral para o lado direito */
+const LadoBarraDireito = styled(LadoBarra)`
+  justify-content: flex-end; /* Alinha o conteúdo à direita */
+  padding-left: 0;
+  padding-right: 50px; /* Espaçamento para o botão de imprimir */
 `;
 
 const Titulo = styled.h1`
@@ -158,10 +188,16 @@ const Titulo = styled.h1`
   color: #fffef7;
   text-align: center;
   user-select: none;
+  
+  /* --- ALTERADO --- */
+  /* O título vai "crescer" para ocupar o espaço central */
+  flex: 2; /* Ocupa 2 partes do espaço (mais que os lados) */
 `;
 
 const Botoes = styled.button`
-  position: fixed;
+  /* --- ALTERADO --- */
+  /* Removemos o position: fixed para que ele entre no layout do flex */
+  /* position: fixed; */
   background: none;
   border: none;
   cursor: pointer;
@@ -169,12 +205,14 @@ const Botoes = styled.button`
 `;
 
 const StyledVoltar = styled(VoltarIcon)`
-  position: fixed;
-  top: 20px;
-  left: 50px;
+  /* --- ALTERADO --- */
+  /* Removemos o position: fixed e as coordenadas */
+  /* position: fixed; */
+  /* top: 20px; */
+  /* left: 50px; */
   width: 70px;
   height: 70px;
-  z-index: 11;
+  /* z-index: 11; */ /* Não é mais necessário */
 `;
 
 const TabelaContainer = styled.div`

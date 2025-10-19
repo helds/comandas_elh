@@ -232,7 +232,7 @@ function TotalDias() {
   const calcularTotaisPorDia = () => {
     // Pega todas as comandas ativas e arquivadas
     const comandasAtivas = JSON.parse(localStorage.getItem('comandas') || '[]');
-    const comandasArquivadas = JSON.parse(localStorage.getItem('comandas_arquivadas') || '[]');
+    const comandasArquivadas = JSON.parse(localStorage.getItem('comandasArquivadas') || '[]');
     
     const todasComandas = [...comandasAtivas, ...comandasArquivadas];
     

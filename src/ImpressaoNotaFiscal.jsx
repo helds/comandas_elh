@@ -300,9 +300,11 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
 export default ImpressaoNotaFiscal;
 
 const BotaoImprimir = styled.button`
-  position: fixed;
-  top: 20px;
-  right: 70px;
+  /* --- REMOVIDO --- */
+  /* top: 20px; */
+  /* right: 70px; */
+  /* z-index: 11; */
+
   background-color: #0abf00;
   border: 5px solid #fffef7;
   border-radius: 10px;
@@ -311,7 +313,6 @@ const BotaoImprimir = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
-  z-index: 11;
   transition: all 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 

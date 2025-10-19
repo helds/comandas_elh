@@ -224,7 +224,7 @@ function PaginaArquivos() {
 
     // Remove da lista de arquivadas
     const novasArquivadas = arquivadas.filter(c => c.id !== comandaParaDesarquivar.id);
-    localStorage.setItem('comandas_arquivadas', JSON.stringify(novasArquivadas));
+    localStorage.setItem('comandasArquivadas', JSON.stringify(novasArquivadas));
     setArquivadas(novasArquivadas); // Atualiza o estado para disparar a reorganização
   };
 
