@@ -50,14 +50,14 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
           .header {
             text-align: center;
             border-bottom: 2px dashed #000;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
+            padding-bottom: 1px;
+            margin-bottom: 1px;
           }
 
           .header h1 {
             font-size: 16pt;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 1px;
           }
 
           .header p {
@@ -66,8 +66,8 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
           }
 
           .info-cliente {
-            margin: 15px 0;
-            padding: 10px 0;
+            margin: 1px 0;
+            padding: 1px 0;
             border-bottom: 1px dashed #000;
           }
 
@@ -80,7 +80,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
           }
 
           .itens {
-            margin: 15px 0;
+            margin: 2px 0;
           }
 
           .itens-header {
@@ -89,14 +89,14 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
             font-weight: bold;
             border-bottom: 1px solid #000;
             padding-bottom: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
           }
 
           .item {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
-            padding: 5px 0;
+            margin: 1px 0;
+            padding: 1px 0;
           }
 
           .item-info {
@@ -105,7 +105,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
 
           .item-nome {
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 0px;
           }
 
           .item-detalhes {
@@ -121,19 +121,19 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
 
           .linha-separadora {
             border-top: 1px dashed #000;
-            margin: 10px 0;
+            margin: 1px 0;
           }
 
           .totais {
-            margin: 15px 0;
-            padding: 10px 0;
+            margin: 1px 0;
+            padding: 1px 0;
             border-top: 2px solid #000;
           }
 
           .total-linha {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
+            margin: 1px 0;
             font-size: 11pt;
           }
 
@@ -141,14 +141,14 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
             font-size: 14pt;
             font-weight: bold;
             margin-top: 10px;
-            padding-top: 10px;
+            padding-top: 1px;
             border-top: 1px dashed #000;
           }
 
           .footer {
             text-align: center;
-            margin-top: 20px;
-            padding-top: 10px;
+            margin-top: 2px;
+            padding-top: 3px;
             border-top: 2px dashed #000;
             font-size: 10pt;
           }
@@ -227,7 +227,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
           </div>
 
           <div class="total-linha">
-            <span>Taxa de Serviço (10%):</span>
+            <span>Taxa de Serviço (10%)*:</span>
             <span>${(totalComanda * 0.1).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
@@ -254,9 +254,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
         </div>
 
         <div class="footer">
-          <p>Total de itens: ${linhasPreenchidas.length}</p>
-          <p class="agradecimento">OBRIGADO PELA PREFERÊNCIA!</p>
-          <p>Volte sempre!</p>
+          <p class="agradecimento">VOLTE SEMPRE!</p>
         </div>
 
         <script>
