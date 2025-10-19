@@ -212,10 +212,10 @@ Please change the parent <Route path="${N}"> to <Route path="${N==="/"?"*":`${N}
           }
 
           body {
-            font-family: 'Courier New', monospace;
-            font-size: 12pt;
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
             line-height: 1.4;
-            max-width: 80mm;
+            max-width: 58mm;
             margin: 0 auto;
             padding: 10px;
           }
