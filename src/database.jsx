@@ -75,8 +75,8 @@ export const cardapio = [
   // Sobremesas
   { id: 66, nome: 'Trufa', preco: 5.00, categoria: 'Sobremesas' },
   { id: 70, nome: 'Picolé Tradicional', preco: 3.00, categoria: 'Sobremesas' },
-  { id: 71, nome: 'Picolé Premium', preco: 4.00, categoria: 'Sobremesas' },
-  { id: 72, nome: 'Picolé Casquinha', preco: 6.00, categoria: 'Sobremesas' },
+  { id: 71, nome: 'Picolé ao Leite', preco: 5.00, categoria: 'Sobremesas' },
+  { id: 72, nome: 'Picolé Casquinha', preco: 7.00, categoria: 'Sobremesas' },
   { id: 74, nome: 'Sorvete', preco: 9.00, categoria: 'Sobremesas' },
 ];
 
