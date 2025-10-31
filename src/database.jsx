@@ -35,9 +35,9 @@ export const cardapio = [
   { id: 102, nome: 'Cerveja Puro Malte 600ml', preco: 10.00, categoria: 'Bebidas Alcoólicas' },
   { id: 103, nome: 'Cerveja Pilsen 600ml', preco: 9.00, categoria: 'Bebidas Alcoólicas' },
   { id: 104, nome: 'Cerveja s/ álcool', preco: 9.00, categoria: 'Bebidas Alcoólicas' },
-  { id: 112, nome: 'Cerveja Puro Malte 600ml (Marca B)', preco: 12.00, categoria: 'Bebidas Alcoólicas' },
-  { id: 113, nome: 'Cerveja Puro Malte 600ml (Marca C)', preco: 13.00, categoria: 'Bebidas Alcoólicas' },
-  { id: 115, nome: 'Cerveja Puro Malte 600ml (Marca D)', preco: 15.00, categoria: 'Bebidas Alcoólicas' },
+  { id: 112, nome: 'Cerveja Puro Malte 600ml (12,00)', preco: 12.00, categoria: 'Bebidas Alcoólicas' },
+  { id: 113, nome: 'Cerveja Puro Malte 600ml (13,00)', preco: 13.00, categoria: 'Bebidas Alcoólicas' },
+  { id: 115, nome: 'Cerveja Puro Malte 600ml (15,00)', preco: 15.00, categoria: 'Bebidas Alcoólicas' },
 
   // Petiscos
   { id: 30, nome: 'Caldinho', preco: 8.00, categoria: 'Petiscos' },
@@ -62,7 +62,7 @@ export const cardapio = [
   { id: 54, nome: 'Bife à Milanesa - Almoço', preco: 80.00, categoria: 'Almoço' },
   { id: 55, nome: 'Bife à Parmegiana - Almoço', preco: 85.00, categoria: 'Almoço' },
   { id: 56, nome: 'Filé de Tilápia - Almoço', preco: 80.00, categoria: 'Almoço' },
-  { id: 57, nome: 'Tlápia à Milanesa - Almoço', preco: 85.00, categoria: 'Almoço' },
+  { id: 57, nome: 'Tilápia à Milanesa - Almoço', preco: 85.00, categoria: 'Almoço' },
   { id: 58, nome: 'Peixe Frito (Cavala) - Almoço', preco: 90.00, categoria: 'Almoço' },
 
   // Acompanhamentos

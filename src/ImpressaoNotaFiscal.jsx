@@ -270,7 +270,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
     `;
 
     // Abre uma nova janela com o conteúdo
-    const janelaImpressao = window.open('', '_blank', 'width=300,height=600');
+    const janelaImpressao = window.open('', '_blank', 'width=900,height=600');
     janelaImpressao.document.write(conteudoImpressao);
     janelaImpressao.document.close();
   };

@@ -159,9 +159,6 @@ const Barra = styled.div`
   z-index: 10;
   display: flex;
   align-items: center;
-  /* --- ALTERADO --- */
-  /* Removemos o justify-content para o flex-grow do Título funcionar */
-  /* justify-content: center; */ 
 `;
 
 /* --- NOVO --- */
@@ -188,10 +185,8 @@ const Titulo = styled.h1`
   color: #fffef7;
   text-align: center;
   user-select: none;
-  
-  /* --- ALTERADO --- */
-  /* O título vai "crescer" para ocupar o espaço central */
-  flex: 2; /* Ocupa 2 partes do espaço (mais que os lados) */
+  margin-bottom: -0.8%;
+  margin-top: 0;
 `;
 
 const Botoes = styled.button`
