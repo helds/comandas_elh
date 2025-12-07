@@ -31,6 +31,7 @@ const Barra = styled.div`
       top: 0;
       left: 0;
       z-index: 10;
+      box-shadow: 0px 4px 0px 0px #007007;
 `;
 
 const Nova = styled.div`
