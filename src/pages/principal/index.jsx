@@ -130,6 +130,11 @@ const StyledAdd = styled(IconeAdd)`
     width: 60px;
     height: 60px;
     z-index: 10;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.07);
+    }
 `;
 
 const StyledMenu = styled(IconeMenu)`
@@ -139,6 +144,11 @@ const StyledMenu = styled(IconeMenu)`
     width: 60px;
     height: 60px;
     z-index: 10;
+        transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
 `;
 
 const Overlay = styled.div`
@@ -175,10 +185,12 @@ const QuadradoComanda = styled.div`
   margin-left: -20px;   
   margin-right: 16px;   
   margin-bottom: 16px;
-
+  transition: all 0.2s ease;
+    
     &:hover {
-    transform: scale(1.005);
+    transform: scale(1.01);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    z-index: 1;
   }
 `;
 
