@@ -54,6 +54,24 @@ const Textbox = styled.div`
       margin-top: 9px;
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
+`;1
+
+const BotaoConfirmar = styled.div`
+      height: 40px;
+      width: 40px;
+      margin-top: -50px;
+      margin-left: 560px;
+      pointer-events: Visible;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
 `;
 
 const CaixaTexto = styled.input`
@@ -137,7 +155,7 @@ const Overlay = styled.div`
 
 const QuadradoComanda = styled.div`
   position: relative;
-  background-color: ${(props) => (props.index % 2 === 0 ? '#09db67' : '#fffef7')};
+  background-color: ${(props) => (props.index % 2 === 0 ? '#0abf00' : '#fffef7')};
   border: 4px solid #007007;
   color: black;
   width: 273px;
@@ -769,6 +787,7 @@ function Principal() {
               <Titulo3 style={{ color: 'black', textAlign: 'left', paddingTop: '12px', paddingLeft: '10px' }}>
                 NOME:
               </Titulo3>
+              
               <CaixaTexto
                 type="text"
                 placeholder="Digite o nome do cliente..."
@@ -777,6 +796,17 @@ function Principal() {
                 onKeyDown={handleKeyDown}
                 autoFocus
               />
+
+              <BotaoConfirmar onClick={adicionarComanda}>
+      
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 30 30"
+                  fill="#0ABF00"
+                >
+                  <path fill="#0ABF00" d="M6.54 13.3c1.76,0.39 11.31,1.15 11.92,1.74 -0.98,0.9 -11.79,1.08 -12.65,2.14 -0.36,0.45 -1.05,1.83 -1.35,2.4 -0.86,1.69 -3.58,6.42 -3.27,7.69 1.14,0.74 3.22,-0.63 5.03,-1.39 1.62,-0.68 3.2,-1.43 4.79,-2.14l14.37 -6.35c1.11,-0.49 4.51,-1.54 3.21,-3.03 -0.58,-0.67 -3.49,-1.79 -4.62,-2.3 -2.1,-0.96 -20.98,-9.39 -21.68,-9.51 -1.55,-0.26 -1.27,1.04 -0.81,1.97 0.78,1.55 1.51,3.09 2.29,4.63 0.52,1.02 1.69,3.91 2.77,4.15z"/>
+                </svg>
+              </BotaoConfirmar>
             </Textbox>
           </Nova>
         </Overlay>
