@@ -3,6 +3,7 @@ import ComandaDetalhe from '../../ComandaDetalhe';
 import Principal from '../principal';
 import PaginaArquivos from '../../PaginaArquivos'; 
 import TotalDias from '../../TotalDia';
+import BackupSystem from '../../BackupSystem';
 
 function AppRouter() {
   return (
@@ -11,6 +12,7 @@ function AppRouter() {
         <Route path="/comandas_elh/comanda/:id" element={<ComandaDetalhe />} /> 
         <Route path="/comandas_elh/arquivos" element={<PaginaArquivos />} /> 
         <Route path="/comandas_elh/total-dia" element={<TotalDias />} />
+        <Route path="/backup" element={<BackupSystem />} />
       </Routes>
   );
 }

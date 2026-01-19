@@ -731,6 +731,9 @@ function Principal() {
           <MenuPrincipalItem onClick={() => navigate('/comandas_elh/total-dia')}>
             Total do Dia
           </MenuPrincipalItem>
+          <MenuPrincipalItem onClick={() => navigate('/backup')}>
+            Backup
+          </MenuPrincipalItem>
         </MenuPrincipalSuspenso>
       )}
 

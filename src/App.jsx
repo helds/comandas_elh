@@ -1,11 +1,14 @@
 import AppRouter from './pages/Routes/Rotas';
 import { BrowserRouter } from 'react-router-dom';
+import { BackupProvider } from './BackupContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
+    <BackupProvider>
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
+    </BackupProvider>
   );
 }
 
