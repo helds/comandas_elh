@@ -6,6 +6,8 @@ export const BackupProvider = ({ children }) => {
   const ultimoHashRef = useRef(
     localStorage.getItem('ultimoHashBackup') || null
   );
+  const timerRef = useRef(null);
+  const ultimoHashMonitoradoRef = useRef(null);
 
   // ================= UTIL =================
   const formatarMoeda = (valor) =>
@@ -48,7 +50,7 @@ export const BackupProvider = ({ children }) => {
 
       return {
         id: c.id,
-        cliente: String(c.nome || '').toUpperCase(), // ✅ CAIXA ALTA
+        cliente: String(c.nome || '').toUpperCase(),
         pedidos,
         totalComanda
       };
@@ -81,7 +83,7 @@ export const BackupProvider = ({ children }) => {
 <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
 
 ${comandas.map(comanda => `
-  <h2>Comanda #${comanda.id} — ${comanda.cliente}</h2>
+  <h2>Comanda #${comanda.id} – ${comanda.cliente}</h2>
 
   <table>
     <thead>
@@ -148,9 +150,44 @@ ${comandas.map(comanda => `
     ultimoHashRef.current = hashAtual;
   };
 
+  // ============ MONITORAMENTO DE MUDANÇAS ============
+  const verificarMudancas = () => {
+    const dados = coletarComandasAtivas();
+    const hashAtual = gerarHash(dados);
+
+    // Se houve mudança desde a última verificação
+    if (hashAtual !== ultimoHashMonitoradoRef.current) {
+      ultimoHashMonitoradoRef.current = hashAtual;
+
+      // Cancela o timer anterior se existir
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      // Só agenda backup se houver comandas e se houve mudança real no conteúdo
+      if (dados.length > 0 && hashAtual !== ultimoHashRef.current) {
+        // Agenda novo backup para 10 segundos
+        timerRef.current = setTimeout(() => {
+          executarBackupAutomatico();
+        }, 10000);
+      }
+    }
+  };
+
   useEffect(() => {
-    const timer = setInterval(executarBackupAutomatico, 10000);
-    return () => clearInterval(timer);
+    // Inicializa o hash monitorado
+    const dados = coletarComandasAtivas();
+    ultimoHashMonitoradoRef.current = gerarHash(dados);
+
+    // Verifica mudanças a cada 500ms
+    const intervalo = setInterval(verificarMudancas, 500);
+
+    return () => {
+      clearInterval(intervalo);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, []);
 
   return (
