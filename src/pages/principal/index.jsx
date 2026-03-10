@@ -1,9 +1,19 @@
-import styled from 'styled-components';
+// index.jsx (Principal) — ATUALIZADO com Firebase
+// Alterações marcadas com // 🔥 FIREBASE
+
+import styled, { keyframes } from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import IconeAdd from '../../assets/IconeAdd.svg?react';
 import IconeMenu from '../../assets/IconeMenu.svg?react';
 import IconeBolaP from '../../assets/IconeBolaP.svg?react';
+
+// 🔥 FIREBASE
+import { useClientes } from '../../useClientes';
+import { useImpressao } from '../../useImpressao';
+import NotificacaoImpressao from '../../NotificacaoImpressao';
+
+// ─── Styled Components ────────────────────────────────────────────────────────
 
 const Fundo = styled.div`
       background-color: #fffef7;
@@ -22,7 +32,6 @@ const Fundo = styled.div`
       padding-left: 20px;
       gap: 0px;
 `;
-
 const Barra = styled.div`
       background-color: #0abf00;
       position: fixed;
@@ -33,7 +42,6 @@ const Barra = styled.div`
       z-index: 10;
       box-shadow: 0px 4px 0px 0px #007007;
 `;
-
 const Nova = styled.div`
       background-color: #0abf00;
       position: fixed;
@@ -43,7 +51,6 @@ const Nova = styled.div`
       justify-content: center;
       border-radius: 25px;
 `;
-
 const Textbox = styled.div`
       background-color: #fffef7;
       position: fixed;
@@ -55,8 +62,7 @@ const Textbox = styled.div`
       margin-top: 9px;
       border-bottom-left-radius: 15px;
       border-bottom-right-radius: 15px;
-`;1
-
+`;
 const BotaoConfirmar = styled.div`
       height: 40px;
       width: 40px;
@@ -65,16 +71,9 @@ const BotaoConfirmar = styled.div`
       pointer-events: Visible;
       cursor: pointer;
       transition: all 0.2s ease;
-
-      &:hover {
-        transform: scale(1.1);
-      }
-
-      &:active {
-        transform: scale(0.98);
-      }
+      &:hover { transform: scale(1.1); }
+      &:active { transform: scale(0.98); }
 `;
-
 const CaixaTexto = styled.input`
       width: 604px;
       margin-top: 5px;
@@ -82,12 +81,8 @@ const CaixaTexto = styled.input`
       padding: 10px;
       border: 2px solid #ccc;
       font-size: 26px;
-      &:focus {
-        outline: none;
-        border-color: #007007;
-      }
+      &:focus { outline: none; border-color: #007007; }
 `;
-
 const Titulo = styled.h1`
       font-family: 'League Spartan', sans-serif;
       font-weight: 700;
@@ -98,7 +93,6 @@ const Titulo = styled.h1`
       pointer-events: none;
       user-select: none;
 `;
-
 const Titulo2 = styled.h2`
       font-family: 'League Spartan', sans-serif;
       font-weight: 650;
@@ -106,7 +100,6 @@ const Titulo2 = styled.h2`
       pointer-events: none;
       user-select: none;
 `;
-
 const Titulo3 = styled.h3`
       font-family: 'League Spartan', sans-serif;
       font-weight: 700;
@@ -114,7 +107,6 @@ const Titulo3 = styled.h3`
       pointer-events: none;
       user-select: none;
 `;
-
 const Botoes = styled.button`
       position: fixed;
       background: none;
@@ -122,7 +114,6 @@ const Botoes = styled.button`
       padding: 0;
       cursor: pointer;
 `;
-
 const StyledAdd = styled(IconeAdd)`
     position: fixed;
     top: 25px;
@@ -131,12 +122,8 @@ const StyledAdd = styled(IconeAdd)`
     height: 60px;
     z-index: 10;
     transition: all 0.2s ease;
-    
-    &:hover {
-      transform: scale(1.07);
-    }
+    &:hover { transform: scale(1.07); }
 `;
-
 const StyledMenu = styled(IconeMenu)`
     position: fixed;
     top: 25px;
@@ -144,13 +131,9 @@ const StyledMenu = styled(IconeMenu)`
     width: 60px;
     height: 60px;
     z-index: 10;
-        transition: all 0.2s ease;
-    
-    &:hover {
-      transform: scale(1.05);
-    }
+    transition: all 0.2s ease;
+    &:hover { transform: scale(1.05); }
 `;
-
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -163,7 +146,6 @@ const Overlay = styled.div`
     align-items: center;
     z-index: 99;
 `;
-
 const QuadradoComanda = styled.div`
   position: relative;
   background-color: ${(props) => (props.index % 2 === 0 ? '#0abf00' : '#fffef7')};
@@ -186,14 +168,8 @@ const QuadradoComanda = styled.div`
   margin-right: 16px;   
   margin-bottom: 16px;
   transition: all 0.2s ease;
-    
-    &:hover {
-    transform: scale(1.01);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-    z-index: 1;
-  }
+  &:hover { transform: scale(1.01); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); z-index: 1; }
 `;
-
 const StyledBola = styled(IconeBolaP)`
       position: absolute;
       top: 15px;
@@ -202,14 +178,10 @@ const StyledBola = styled(IconeBolaP)`
       height: 35px;
       z-index: 10000;
       cursor: pointer;
-        transition: all 0.2s ease;
-
-  &:hover {
-    transform: scale(1.07);
-}
-  `;
-
-const IconeImpressora = styled.div`
+      transition: all 0.2s ease;
+      &:hover { transform: scale(1.07); }
+`;
+const IconeImpressoraComanda = styled.div`
   position: absolute;
   top: 8px;
   left: 12px;
@@ -219,18 +191,9 @@ const IconeImpressora = styled.div`
   cursor: pointer;
   color: #007007;
   transition: all 0.2s ease;
-
-  &:hover {
-    transform: scale(1.07);
-    color: #005005;
-  }
-
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  &:hover { transform: scale(1.07); color: #005005; }
+  svg { width: 100%; height: 100%; }
 `;
-
 const MenuPrincipalSuspenso = styled.div`
   position: fixed;
   top: 18px;
@@ -238,12 +201,10 @@ const MenuPrincipalSuspenso = styled.div`
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  z-index: 15000;
   overflow: hidden;
   width: 250px;
-  z-index: 15000;
 `;
-
 const MenuPrincipalItem = styled.div`
   padding: 15px 20px;
   font-size: 25px;
@@ -253,12 +214,8 @@ const MenuPrincipalItem = styled.div`
   cursor: pointer;
   text-align: left;
   text-transform: uppercase;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
+  &:hover { background-color: #f0f0f0; }
 `;
-
 const MenuSuspenso = styled.div`
   position: absolute;
   top: 55px;
@@ -270,7 +227,6 @@ const MenuSuspenso = styled.div`
   overflow: hidden;
   width: 200px;
 `;
-
 const MenuItem = styled.div`
   padding: 12px 16px;
   font-size: 25px;
@@ -279,12 +235,8 @@ const MenuItem = styled.div`
   cursor: pointer;
   text-align: left;
   text-transform: uppercase;
-
-  &:hover {
-    background-color: #f5f5f5;
-  }
+  &:hover { background-color: #f5f5f5; }
 `;
-
 const InputEdicao = styled.input`
   width: 90%;
   background-color: #fffef7;
@@ -300,325 +252,113 @@ const InputEdicao = styled.input`
   z-index: 3;
 `;
 
-// Função de impressão importada (mesma lógica do ImpressaoNotaFiscal.jsx)
+// 🔥 FIREBASE — botão flutuante de impressão
+const pulsar = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10, 191, 0, 0.6); }
+  50%       { box-shadow: 0 0 0 12px rgba(10, 191, 0, 0); }
+`;
+
+const BotaoImpressaoFlutuante = styled.button`
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  z-index: 500;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #0abf00;
+  border: 3px solid #007007;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ${pulsar} 2s infinite;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    background-color: #079100;
+  }
+
+  svg {
+    width: 36px;
+    height: 36px;
+  }
+`;
+
+const BadgeContador = styled.span`
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #e53935;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+`;
+
+// ─── Impressão da comanda completa (sem alterações) ───────────────────────────
+
 const gerarNotaFiscal = (nomeCliente, comandaId, linhas, totalComanda) => {
   const linhasPreenchidas = linhas.filter(
     (linha) => linha.produto && linha.quant && linha.valorUnit
   );
+  if (linhasPreenchidas.length === 0) { alert('Não há itens para imprimir!'); return; }
 
-  if (linhasPreenchidas.length === 0) {
-    alert('Não há itens para imprimir!');
-    return;
-  }
-
-  const conteudoImpressao = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Nota Fiscal - Comanda ${comandaId}</title>
-        <style>
-          @media print {
-            @page {
-              size: 58mm auto;
-              margin: 5mm;
-            }
-            body {
-              margin: 0;
-              padding: 0;
-            }
-          }
-
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-
-          body {
-            font-family: 'Arial', sans-serif;
-            font-size: 11pt;
-            line-height: 1.4;
-            max-width: 58mm;
-            margin: 0 auto;
-            padding: 10px;
-          }
-
-          .header {
-            text-align: center;
-            border-bottom: 2px dashed #000;
-            padding-bottom: 1px;
-            margin-bottom: 1px;
-          }
-
-          .header h1 {
-            font-size: 16pt;
-            font-weight: bold;
-            margin-bottom: 1px;
-          }
-
-          .header p {
-            font-size: 10pt;
-            margin: 2px 0;
-          }
-
-          .info-cliente {
-            margin: 1px 0;
-            padding: 1px 0;
-            border-bottom: 1px dashed #000;
-          }
-
-          .info-cliente p {
-            margin: 5px 0;
-          }
-
-          .info-cliente strong {
-            font-weight: bold;
-          }
-
-          .itens {
-            margin: 2px 0;
-          }
-
-          .itens-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            border-bottom: 1px solid #000;
-            padding-bottom: 5px;
-            margin-bottom: 5px;
-          }
-
-          .item {
-            display: flex;
-            justify-content: space-between;
-            margin: 1px 0;
-            padding: 1px 0;
-          }
-
-          .item-info {
-            flex: 1;
-          }
-
-          .item-nome {
-            font-weight: bold;
-            margin-bottom: 0px;
-          }
-
-          .item-detalhes {
-            font-size: 10pt;
-            color: #333;
-          }
-
-          .item-total {
-            font-weight: bold;
-            text-align: right;
-            min-width: 80px;
-          }
-
-          .linha-separadora {
-            border-top: 1px dashed #000;
-            margin: 1px 0;
-          }
-
-          .totais {
-            margin: 1px 0;
-            padding: 1px 0;
-            border-top: 2px solid #000;
-          }
-
-          .total-linha {
-            display: flex;
-            justify-content: space-between;
-            margin: 1px 0;
-            font-size: 11pt;
-          }
-
-          .total-linha.destaque {
-            font-size: 14pt;
-            font-weight: bold;
-            margin-top: 10px;
-            padding-top: 1px;
-            border-top: 1px dashed #000;
-          }
-
-          .footer {
-            text-align: center;
-            margin-top: 2px;
-            padding-top: 3px;
-            border-top: 2px dashed #000;
-            font-size: 10pt;
-          }
-
-          .footer p {
-            margin: 5px 0;
-          }
-
-          .agradecimento {
-            font-weight: bold;
-            margin-top: 10px;
-            font-size: 12pt;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <h1>EL HONORATO</h1>
-          <p>Comanda Nº ${comandaId}</p>
-          <p>${new Date().toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-          })} às ${new Date().toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}</p>
-        </div>
-
-        <div class="info-cliente">
-          <p><strong>Cliente:</strong> ${nomeCliente.toUpperCase()}</p>
-        </div>
-
-        <div class="itens">
-          <div class="itens-header">
-            <span>ITEM</span>
-            <span>TOTAL</span>
-          </div>
-
-          ${linhasPreenchidas
-            .map((linha) => {
-              const quantidade = parseFloat(linha.quant) || 0;
-              const valorUnit = parseFloat(linha.valorUnit) || 0;
-              const total = quantidade * valorUnit;
-
-              return `
-                <div class="item">
-                  <div class="item-info">
-                    <div class="item-nome">${linha.produto}</div>
-                    <div class="item-detalhes">
-                      ${quantidade}x ${valorUnit.toLocaleString('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })}
-                    </div>
-                  </div>
-                  <div class="item-total">
-                    ${total.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  </div>
-                </div>
-              `;
-            })
-            .join('')}
-        </div>
-
-        <div class="totais">
-          <div class="total-linha">
-            <span>Subtotal:</span>
-            <span>${totalComanda.toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}</span>
-          </div>
-
-          <div class="total-linha">
-            <span>Taxa de Serviço (10%)*:</span>
-            <span>${(totalComanda * 0.1).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}</span>
-          </div>
-
-          <div class="total-linha destaque">
-            <span>TOTAL:</span>
-            <span>${(totalComanda * 1.1).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}</span>
-          </div>
-
-          <div class="linha-separadora"></div>
-
-          <div class="total-linha">
-            <span>Com Cartão (+5%):</span>
-            <span>${(totalComanda * 1.1 * 1.05).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL',
-            })}</span>
-          </div>
-        </div>
-
-        <div class="footer">
-          <p class="agradecimento">VOLTE SEMPRE!</p>
-        </div>
-
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() {
-              window.close();
-            };
-          };
-        </script>
-      </body>
-      </html>
-    `;
+  const conteudoImpressao = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Nota Fiscal</title><style>@media print{@page{size:58mm auto;margin:5mm}body{margin:0;padding:0}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:11pt;line-height:1.4;max-width:58mm;margin:0 auto;padding:10px}.header{text-align:center;border-bottom:2px dashed #000;padding-bottom:1px;margin-bottom:1px}.header h1{font-size:16pt;font-weight:bold;margin-bottom:1px}.header p{font-size:10pt;margin:2px 0}.info-cliente{margin:1px 0;padding:1px 0;border-bottom:1px dashed #000}.info-cliente p{margin:5px 0}.itens{margin:2px 0}.itens-header{display:flex;justify-content:space-between;font-weight:bold;border-bottom:1px solid #000;padding-bottom:5px;margin-bottom:5px}.item{display:flex;justify-content:space-between;margin:1px 0;padding:1px 0}.item-info{flex:1}.item-nome{font-weight:bold}.item-detalhes{font-size:10pt;color:#333}.item-total{font-weight:bold;text-align:right;min-width:80px}.totais{margin:1px 0;padding:1px 0;border-top:2px solid #000}.total-linha{display:flex;justify-content:space-between;margin:1px 0;font-size:11pt}.total-linha.destaque{font-size:14pt;font-weight:bold;margin-top:10px;padding-top:1px;border-top:1px dashed #000}.footer{text-align:center;margin-top:2px;padding-top:3px;border-top:2px dashed #000;font-size:10pt}.agradecimento{font-weight:bold;margin-top:10px;font-size:12pt}</style></head><body><div class="header"><h1>EL HONORATO</h1><p>Comanda Nº ${comandaId}</p><p>${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p></div><div class="info-cliente"><p><strong>Cliente:</strong> ${nomeCliente.toUpperCase()}</p></div><div class="itens"><div class="itens-header"><span>ITEM</span><span>TOTAL</span></div>${linhasPreenchidas.map(linha => { const q = parseFloat(linha.quant) || 0; const v = parseFloat(linha.valorUnit) || 0; const t = q * v; return `<div class="item"><div class="item-info"><div class="item-nome">${linha.produto}</div><div class="item-detalhes">${q}x ${v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div></div><div class="item-total">${t.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div></div>`; }).join('')}</div><div class="totais"><div class="total-linha"><span>Subtotal:</span><span>${totalComanda.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div><div class="total-linha"><span>Taxa de Serviço (10%)*:</span><span>${(totalComanda * 0.1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div><div class="total-linha destaque"><span>TOTAL:</span><span>${(totalComanda * 1.1).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div><div class="total-linha"><span>Com Cartão (+5%):</span><span>${(totalComanda * 1.1 * 1.05).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div></div><div class="footer"><p class="agradecimento">VOLTE SEMPRE!</p></div><script>window.onload=function(){window.print();window.onafterprint=function(){window.close();}};<\/script></body></html>`;
 
   const janelaImpressao = window.open('', '_blank', 'width=300,height=600');
   janelaImpressao.document.write(conteudoImpressao);
   janelaImpressao.document.close();
 };
 
+// ─── Componente Principal ─────────────────────────────────────────────────────
+
 function Principal() {
   const navigate = useNavigate();
   const [mostrarNova, setMostrarNova] = useState(false);
   const [nomeComanda, setNomeComanda] = useState('');
   const [menuAbertoId, setMenuAbertoId] = useState(null);
-  const [editingId, setEditingId] = useState(null); 
+  const [editingId, setEditingId] = useState(null);
   const [novoNome, setNovoNome] = useState('');
   const [menuPrincipalAberto, setMenuPrincipalAberto] = useState(false);
 
-  const [comandas, setComandas] = useState(() => {
-    const comandasSalvas = localStorage.getItem('comandas');
-    return comandasSalvas ? JSON.parse(comandasSalvas) : [];
-  });
+  // 🔥 FIREBASE — comandas
+  const { listaClientes: comandas, criarCliente, excluirCliente } = useClientes();
+
+  // 🔥 FIREBASE — fila de impressão do garçom
+  const { impressoes, marcarImpresso } = useImpressao();
+  const [painelImpressaoAberto, setPainelImpressaoAberto] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('comandas', JSON.stringify(comandas));
-  }, [comandas]);
-
-  useEffect(() => {
-    const fecharMenu = () => {
-      setMenuAbertoId(null);
-      setMenuPrincipalAberto(false);
-    };
-
+    const fecharMenu = () => { setMenuAbertoId(null); setMenuPrincipalAberto(false); };
     if (menuAbertoId !== null || menuPrincipalAberto) {
       window.addEventListener('click', fecharMenu);
     }
-    
-    return () => {
-      window.removeEventListener('click', fecharMenu);
-    };
+    return () => window.removeEventListener('click', fecharMenu);
   }, [menuAbertoId, menuPrincipalAberto]);
 
-  const adicionarComanda = () => {
+  const adicionarComanda = async () => {
     if (nomeComanda.trim() !== '') {
-      const novaComanda = {
-        id: Date.now(),
-        nome: nomeComanda.trim()
-      };
-      setComandas([...comandas, novaComanda]);
-      setNomeComanda('');
-      setMostrarNova(false);
+      try {
+        await criarCliente(nomeComanda.trim());
+        setNomeComanda('');
+        setMostrarNova(false);
+      } catch (error) {
+        console.error("Erro do Firebase:", error);
+        alert("Falha ao salvar no banco! Abra o Console (F12) para ver o erro.");
+      }
     }
   };
 
-  const deletarComanda = (idParaDeletar) => {
-    const novasComandas = comandas.filter(comanda => comanda.id !== idParaDeletar);
-    setComandas(novasComandas);
+  const deletarComanda = async (idParaDeletar) => {
+    await excluirCliente(idParaDeletar);
     localStorage.removeItem(`comanda_${idParaDeletar}`);
   };
 
@@ -630,28 +370,16 @@ function Principal() {
 
   const salvarEdicao = () => {
     if (!editingId || novoNome.trim() === '') return;
-
-    setComandas(comandasAtuais =>
-      comandasAtuais.map(comanda =>
-        comanda.id === editingId ? { ...comanda, nome: novoNome.trim() } : comanda
-      )
-    );
-
     setEditingId(null);
   };
 
   const handleInputKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      salvarEdicao();
-    } else if (e.key === 'Escape') {
-      setEditingId(null);
-    }
+    if (e.key === 'Enter') salvarEdicao();
+    else if (e.key === 'Escape') setEditingId(null);
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      adicionarComanda();
-    }
+    if (e.key === 'Enter') { e.preventDefault(); adicionarComanda(); }
   };
 
   const toggleMenu = (e, comandaId) => {
@@ -663,51 +391,27 @@ function Principal() {
     e.stopPropagation();
     setMenuPrincipalAberto(!menuPrincipalAberto);
   };
-  
+
   const handleArquivar = (comanda) => {
     if (window.confirm(`Deseja arquivar a comanda "${comanda.nome}"?`)) {
-      // Adiciona às comandas arquivadas
       const comandasArquivadas = JSON.parse(localStorage.getItem('comandasArquivadas') || '[]');
-      const comandaArquivada = {
-        ...comanda,
-        dataArquivamento: new Date().toISOString()
-      };
-      comandasArquivadas.push(comandaArquivada);
+      comandasArquivadas.push({ ...comanda, dataArquivamento: new Date().toISOString() });
       localStorage.setItem('comandasArquivadas', JSON.stringify(comandasArquivadas));
-
-      // Remove das comandas ativas
-      const novasComandas = comandas.filter(c => c.id !== comanda.id);
-      setComandas(novasComandas);
+      deletarComanda(comanda.id);
     }
   };
 
   const imprimirComanda = (e, comanda) => {
     e.stopPropagation();
-
     const chave = `comanda_${comanda.id}`;
     const dadosSalvos = localStorage.getItem(chave);
-    
-    if (!dadosSalvos) {
-      alert('Não há dados para imprimir nesta comanda!');
-      return;
-    }
-
+    if (!dadosSalvos) { alert('Não há dados para imprimir nesta comanda!'); return; }
     const linhas = JSON.parse(dadosSalvos);
-    const linhasPreenchidas = linhas.filter(
-      (linha) => linha.produto && linha.quant && linha.valorUnit
-    );
-
-    if (linhasPreenchidas.length === 0) {
-      alert('Não há itens para imprimir!');
-      return;
-    }
-
+    const linhasPreenchidas = linhas.filter(l => l.produto && l.quant && l.valorUnit);
+    if (linhasPreenchidas.length === 0) { alert('Não há itens para imprimir!'); return; }
     const totalComanda = linhasPreenchidas.reduce((soma, linha) => {
-      const quantidade = parseFloat(linha.quant) || 0;
-      const valor = parseFloat(linha.valorUnit) || 0;
-      return soma + quantidade * valor;
+      return soma + (parseFloat(linha.quant) || 0) * (parseFloat(linha.valorUnit) || 0);
     }, 0);
-
     gerarNotaFiscal(comanda.nome, comanda.id, linhas, totalComanda);
   };
 
@@ -715,30 +419,20 @@ function Principal() {
     <Fundo>
       <Barra>
         <Titulo>COMANDAS</Titulo>
-        <Botoes onClick={() => setMostrarNova(true)}>
-          <StyledAdd />
-        </Botoes>
-        <Botoes onClick={toggleMenuPrincipal}>
-          <StyledMenu />
-        </Botoes>
+        <Botoes onClick={() => { setNomeComanda(''); setMostrarNova(true); }}><StyledAdd /></Botoes>
+        <Botoes onClick={toggleMenuPrincipal}><StyledMenu /></Botoes>
       </Barra>
 
       {menuPrincipalAberto && (
         <MenuPrincipalSuspenso onClick={(e) => e.stopPropagation()}>
-          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/arquivos')}>
-            Arquivados
-          </MenuPrincipalItem>
-          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/total-dia')}>
-            Total do Dia
-          </MenuPrincipalItem>
-          <MenuPrincipalItem onClick={() => navigate('/backup')}>
-            Backup
-          </MenuPrincipalItem>
+          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/arquivos')}>Arquivados</MenuPrincipalItem>
+          <MenuPrincipalItem onClick={() => navigate('/comandas_elh/total-dia')}>Total do Dia</MenuPrincipalItem>
+          <MenuPrincipalItem onClick={() => navigate('/backup')}>Backup</MenuPrincipalItem>
         </MenuPrincipalSuspenso>
       )}
 
       {comandas.map((comanda, index) => (
-        <QuadradoComanda 
+        <QuadradoComanda
           key={comanda.id}
           index={index}
           onClick={() => !editingId && navigate(`/comandas_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
@@ -756,24 +450,13 @@ function Principal() {
           ) : (
             <>
               {comanda.nome}
-              
-              {/* Ícone de Impressora */}
-              <IconeImpressora onClick={(e) => imprimirComanda(e, comanda)} title="Imprimir Comanda">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="#fffef7"
-                  stroke="black"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+              <IconeImpressoraComanda onClick={(e) => imprimirComanda(e, comanda)} title="Imprimir Comanda">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fffef7" stroke="black" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="6 9 6 2 18 2 18 9" />
                   <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                   <rect x="6" y="14" width="12" height="8" />
                 </svg>
-              </IconeImpressora>
-
+              </IconeImpressoraComanda>
               <StyledBola onClick={(e) => toggleMenu(e, comanda.id)} />
             </>
           )}
@@ -789,21 +472,41 @@ function Principal() {
               <MenuItem onClick={() => handleArquivar(comanda)}>Arquivar</MenuItem>
             </MenuSuspenso>
           )}
-
         </QuadradoComanda>
       ))}
+
+      {/* 🔥 FIREBASE — botão flutuante, só aparece se houver pedidos pendentes */}
+      {impressoes.length > 0 && (
+        <BotaoImpressaoFlutuante
+          onClick={() => setPainelImpressaoAberto((v) => !v)}
+          title="Pedidos para imprimir"
+        >
+          <BadgeContador>{impressoes.length}</BadgeContador>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9" />
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+            <rect x="6" y="14" width="12" height="8" />
+          </svg>
+        </BotaoImpressaoFlutuante>
+      )}
+
+      {/* 🔥 FIREBASE — painel de notificações de impressão */}
+      {painelImpressaoAberto && impressoes.length > 0 && (
+        <NotificacaoImpressao
+          impressoes={impressoes}
+          onImprimir={(id) => {
+            marcarImpresso(id);
+            if (impressoes.length === 1) setPainelImpressaoAberto(false);
+          }}
+        />
+      )}
 
       {mostrarNova && (
         <Overlay onClick={() => setMostrarNova(false)}>
           <Nova onClick={(e) => e.stopPropagation()}>
-            <Titulo2 style={{ color: '#fffef7', textAlign: 'center', paddingTop: '20px' }}>
-              NOVA COMANDA
-            </Titulo2>
+            <Titulo2 style={{ color: '#fffef7', textAlign: 'center', paddingTop: '20px' }}>NOVA COMANDA</Titulo2>
             <Textbox>
-              <Titulo3 style={{ color: 'black', textAlign: 'left', paddingTop: '12px', paddingLeft: '10px' }}>
-                NOME:
-              </Titulo3>
-              
+              <Titulo3 style={{ color: 'black', textAlign: 'left', paddingTop: '12px', paddingLeft: '10px' }}>NOME:</Titulo3>
               <CaixaTexto
                 type="text"
                 placeholder="Digite o nome do cliente..."
@@ -812,15 +515,9 @@ function Principal() {
                 onKeyDown={handleKeyDown}
                 autoFocus
               />
-
               <BotaoConfirmar onClick={adicionarComanda}>
-      
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 30 30"
-                  fill="#0ABF00"
-                >
-                  <path fill="#0ABF00" d="M6.54 13.3c1.76,0.39 11.31,1.15 11.92,1.74 -0.98,0.9 -11.79,1.08 -12.65,2.14 -0.36,0.45 -1.05,1.83 -1.35,2.4 -0.86,1.69 -3.58,6.42 -3.27,7.69 1.14,0.74 3.22,-0.63 5.03,-1.39 1.62,-0.68 3.2,-1.43 4.79,-2.14l14.37 -6.35c1.11,-0.49 4.51,-1.54 3.21,-3.03 -0.58,-0.67 -3.49,-1.79 -4.62,-2.3 -2.1,-0.96 -20.98,-9.39 -21.68,-9.51 -1.55,-0.26 -1.27,1.04 -0.81,1.97 0.78,1.55 1.51,3.09 2.29,4.63 0.52,1.02 1.69,3.91 2.77,4.15z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="#0ABF00">
+                  <path fill="#0ABF00" d="M6.54 13.3c1.76,0.39 11.31,1.15 11.92,1.74 -0.98,0.9 -11.79,1.08 -12.65,2.14 -0.36,0.45 -1.05,1.83 -1.35,2.4 -0.86,1.69 -3.58,6.42 -3.27,7.69 1.14,0.74 3.22,-0.63 5.03,-1.39 1.62,-0.68 3.2,-1.43 4.79,-2.14l14.37 -6.35c1.11,-0.49 4.51,-1.54 3.21,-3.03 -0.58,-0.67 -3.49,-1.79 -4.62,-2.3 -2.1,-0.96 -20.98,-9.39 -21.68,-9.51 -1.55,-0.26 -1.27,1.04 -0.81,1.97 0.78,1.55 1.51,3.09 2.29,4.63 0.52,1.02 1.69,3.91 2.77,4.15z" />
                 </svg>
               </BotaoConfirmar>
             </Textbox>

@@ -104,7 +104,7 @@ const SugestoesLista = styled.ul`
   margin: 0;
   padding: 0;
   z-index: 10;
-  max-height: 200px;
+  max-height: 238px;
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
