@@ -251,7 +251,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
 
           .item-detalhes {
             font-size: 10pt;
-            color: #333;
+            color: #000;
           }
 
           .item-total {
@@ -337,6 +337,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
               `}).join("")}
         </div>
 
+<!--
         <div class="totais">
           <div class="total-linha">
             <span>Subtotal:</span>
@@ -347,17 +348,24 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
             <span>Taxa de Serviço (10%)*:</span>
             <span>${(r*.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
           </div>
+-->
 
           <div class="total-linha destaque">
             <span>TOTAL:</span>
-            <span>${(r*1.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+<!--            
+              <span>${(r*1.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+-->
+                <span>${r.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
           </div>
 
           <div class="linha-separadora"></div>
 
           <div class="total-linha">
             <span>Com Cartão (+5%):</span>
+<!--
             <span>${(r*1.1*1.05).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+-->
+                <span>${(r*1.05).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
           </div>
         </div>
 
@@ -614,7 +622,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  `,J3=n=>U.createElement("svg",{xmlns:"http://www.w3.org/2000/svg",xmlSpace:"preserve",width:"60px",height:"60px",shapeRendering:"geometricPrecision",textRendering:"geometricPrecision",imageRendering:"optimizeQuality",fillRule:"evenodd",clipRule:"evenodd",viewBox:"0 0 60 60",xmlnsXlink:"http://www.w3.org/1999/xlink","xmlns:xodm":"http://www.corel.com/coreldraw/odm/2003",...n},U.createElement("g",{id:"Camada_x0020_1"},U.createElement("metadata",{id:"CorelCorpID_0Corel-Layer"}),U.createElement("rect",{fill:"#FFFEF7",y:44.25,width:60,height:11.53}),U.createElement("rect",{fill:"#FFFEF7",y:24.23,width:60,height:11.53}),U.createElement("rect",{fill:"#FFFEF7",y:4.22,width:60,height:11.53}))),vx=n=>U.createElement("svg",{xmlns:"http://www.w3.org/2000/svg",xmlSpace:"preserve",width:"60px",height:"60px",shapeRendering:"geometricPrecision",textRendering:"geometricPrecision",imageRendering:"optimizeQuality",fillRule:"evenodd",clipRule:"evenodd",viewBox:"0 0 60 60",xmlnsXlink:"http://www.w3.org/1999/xlink","xmlns:xodm":"http://www.corel.com/coreldraw/odm/2003",...n},U.createElement("g",{id:"Camada_x0020_1"},U.createElement("metadata",{id:"CorelCorpID_0Corel-Layer"}),U.createElement("g",{id:"_2261510808160"},U.createElement("circle",{fill:"#000000",cx:30,cy:10.38,r:6.16}),U.createElement("circle",{fill:"#000000",cx:30,cy:49.62,r:6.16}),U.createElement("circle",{fill:"#000000",cx:30,cy:30,r:6.16})))),Ay="mesas";function Z3(){const[n,e]=U.useState([]);return U.useEffect(()=>{const a=T0(Ms,Ay),l=P0(a,u=>{const h=u.docs.map(p=>({id:p.id,...p.data()}));e(h),localStorage.setItem("comandas",JSON.stringify(h))});return()=>l()},[]),{listaClientes:n,criarCliente:async a=>{const u=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),h=Date.now().toString();return await Hk(rh(Ms,Ay,h),{nome:a.trim(),hora:u,criadoEm:Ok()}),{id:h,nome:a.trim(),hora:u}},excluirCliente:async a=>{await Gk(rh(Ms,Ay,a))}}}function e5(){const[n,e]=U.useState([]);return U.useEffect(()=>{const r=dI(T0(Ms,"impressoes"),pI("status","==","pendente")),a=P0(r,l=>{const u=l.docs.map(h=>({id:h.id,...h.data()}));u.sort((h,p)=>h.timestamp?.seconds-p.timestamp?.seconds),e(u)});return()=>a()},[]),{impressoes:n,marcarImpresso:async r=>{try{await V0(rh(Ms,"impressoes",r),{status:"impresso"})}catch(a){console.error("Erro ao marcar como impresso:",a)}}}}function t5(n,e,t=""){const r=new Date,a=r.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});r.toLocaleDateString("pt-BR");const l=e.map(h=>`
+  `,J3=n=>U.createElement("svg",{xmlns:"http://www.w3.org/2000/svg",xmlSpace:"preserve",width:"60px",height:"60px",shapeRendering:"geometricPrecision",textRendering:"geometricPrecision",imageRendering:"optimizeQuality",fillRule:"evenodd",clipRule:"evenodd",viewBox:"0 0 60 60",xmlnsXlink:"http://www.w3.org/1999/xlink","xmlns:xodm":"http://www.corel.com/coreldraw/odm/2003",...n},U.createElement("g",{id:"Camada_x0020_1"},U.createElement("metadata",{id:"CorelCorpID_0Corel-Layer"}),U.createElement("rect",{fill:"#FFFEF7",y:44.25,width:60,height:11.53}),U.createElement("rect",{fill:"#FFFEF7",y:24.23,width:60,height:11.53}),U.createElement("rect",{fill:"#FFFEF7",y:4.22,width:60,height:11.53}))),vx=n=>U.createElement("svg",{xmlns:"http://www.w3.org/2000/svg",xmlSpace:"preserve",width:"60px",height:"60px",shapeRendering:"geometricPrecision",textRendering:"geometricPrecision",imageRendering:"optimizeQuality",fillRule:"evenodd",clipRule:"evenodd",viewBox:"0 0 60 60",xmlnsXlink:"http://www.w3.org/1999/xlink","xmlns:xodm":"http://www.corel.com/coreldraw/odm/2003",...n},U.createElement("g",{id:"Camada_x0020_1"},U.createElement("metadata",{id:"CorelCorpID_0Corel-Layer"}),U.createElement("g",{id:"_2261510808160"},U.createElement("circle",{fill:"#000000",cx:30,cy:10.38,r:6.16}),U.createElement("circle",{fill:"#000000",cx:30,cy:49.62,r:6.16}),U.createElement("circle",{fill:"#000000",cx:30,cy:30,r:6.16})))),Ay="mesas";function Z3(){const[n,e]=U.useState([]);return U.useEffect(()=>{const a=T0(Ms,Ay),l=P0(a,u=>{const h=u.docs.map(p=>({id:p.id,...p.data()}));e(h),localStorage.setItem("comandas",JSON.stringify(h))});return()=>l()},[]),{listaClientes:n,criarCliente:async a=>{const u=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),h=Date.now().toString();return await Hk(rh(Ms,Ay,h),{nome:a.trim(),hora:u,criadoEm:Ok()}),{id:h,nome:a.trim(),hora:u}},excluirCliente:async a=>{await Gk(rh(Ms,Ay,a))}}}function e5(){const[n,e]=U.useState([]);return U.useEffect(()=>{const r=dI(T0(Ms,"impressoes"),pI("status","==","pendente")),a=P0(r,l=>{const u=l.docs.map(h=>({id:h.id,...h.data()}));u.sort((h,p)=>h.timestamp?.seconds-p.timestamp?.seconds),e(u)});return()=>a()},[]),{impressoes:n,marcarImpresso:async r=>{try{await V0(rh(Ms,"impressoes",r),{status:"impresso"})}catch(a){console.error("Erro ao marcar como impresso:",a)}}}}function t5(n,e,t=""){const a=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),l=e.map(h=>`
     <div class="item">
       <span class="quant">${h.quantidade}x</span><span class="nome">${h.nome}</span>
       ${h.obs?`<div class="obs">OBS: ${h.obs}</div>`:""}
@@ -630,7 +638,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
   <style>
     @page {
       size: 58mm auto;
-      margin: 2mm 1mm;
+      margin: 5mm;
     }
 
     * {
@@ -639,14 +647,15 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
       box-sizing: border-box;
     }
 
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 10px;
-      width: 54mm;
-      color: #000;
-      background: #fff;
-    }
-
+          body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            max-width: 58mm;
+            margin: 0 auto;
+            padding: 10px;
+          }
+            
     .mesa {
       font-size: 16px;
       font-weight: bold;
@@ -657,7 +666,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
     }
 
     .data-hora {
-      font-size: 9px;
+      font-size: 9pt;
       text-align: center;
       margin-bottom: 4px;
     }
@@ -686,24 +695,23 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
     }
 
     .item .quant {
-      font-size: 11px;
+      font-size: 11pt;
       font-weight: bold;
       margin-right: 3px;
     }
 
     .item .nome {
-      font-size: 11px;
+      font-size: 11pt;
     }
 
     .item .obs {
-      font-size: 9px;
+      font-size: 10pt;
       margin-top: 1px;
       margin-left: 14px;
-      font-style: italic;
     }
 
     .obs-geral {
-      font-size: 9px;
+      font-size: 10pt;
       font-style: italic;
       padding: 2px 4px;
       margin-top: 2px;
@@ -720,7 +728,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
     @media print {
       @page {
         size: 58mm auto;
-        margin: 2mm 1mm;
+        margin: 5mm;
       }
       body {
         width: 54mm;
@@ -728,12 +736,13 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
     }
   </style>
 </head>
+
 <body>
   <div class="mesa">${n}</div>
   <div class="data-hora">Pedido Cadastrado às ${a}</div>
   ${l}
   ${u}
-  <\/script>
+
 </body>
 </html>`}const n5=ro`
   from { opacity: 0; transform: translateX(60px); }
@@ -823,7 +832,7 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
   background: #fffbe6;
   border-left: 3px solid #e6b800;
   border-radius: 6px;
-`;function p5(n,e,t=""){const r=t5(n,e,t),a=window.open("","_blank","width=420,height=600");return a?(a.document.write(r),a.document.close(),a.onload=()=>{a.focus(),a.print()},!0):(alert("Pop-up bloqueado! Libere pop-ups para este site nas configurações do navegador."),!1)}function g5({impressoes:n,onImprimir:e}){if(!n||n.length===0)return null;const t=r=>{p5(r.mesa,r.itens,r.observacaoGeral)&&e(r.id)};return M.jsx(i5,{children:n.map(r=>M.jsxs(s5,{children:[M.jsxs(a5,{children:[M.jsxs(o5,{children:["🖨 ",r.mesa]}),M.jsx(l5,{onClick:()=>t(r),children:"Imprimir"})]}),M.jsx(u5,{children:r.itens.map((a,l)=>M.jsxs(c5,{children:[M.jsxs(h5,{children:[M.jsxs("span",{className:"quant",children:[a.quantidade,"x"]}),a.nome]}),a.obs&&M.jsxs(f5,{children:["⚠ ",a.obs]})]},l))}),r.observacaoGeral?M.jsxs(d5,{children:["⚠ ",r.observacaoGeral]}):null]},r.id))})}const m5=Z.div`
+`;function p5(n,e,t=""){const r=t5(n,e,t),a=window.open("","_blank","width=900,height=600");return a?(a.document.write(r),a.document.close(),a.onload=()=>{a.focus(),a.print()},!0):(alert("Pop-up bloqueado! Libere pop-ups para este site nas configurações do navegador."),!1)}function g5({impressoes:n,onImprimir:e}){if(!n||n.length===0)return null;const t=r=>{p5(r.mesa,r.itens,r.observacaoGeral)&&e(r.id)};return M.jsx(i5,{children:n.map(r=>M.jsxs(s5,{children:[M.jsxs(a5,{children:[M.jsxs(o5,{children:["🖨 ",r.mesa]}),M.jsx(l5,{onClick:()=>t(r),children:"Imprimir"})]}),M.jsx(u5,{children:r.itens.map((a,l)=>M.jsxs(c5,{children:[M.jsxs(h5,{children:[M.jsxs("span",{className:"quant",children:[a.quantidade,"x"]}),a.nome]}),a.obs&&M.jsxs(f5,{children:["⚠ ",a.obs]})]},l))}),r.observacaoGeral?M.jsxs(d5,{children:["⚠ ",r.observacaoGeral]}):null]},r.id))})}const m5=Z.div`
       background-color: #fffef7;
       background-size: cover;
       background-position: center;
@@ -1082,7 +1091,235 @@ Please change the parent <Route path="${V}"> to <Route path="${V==="/"?"*":`${V}
   align-items: center;
   justify-content: center;
   font-family: 'Nunito', sans-serif;
-`,L5=(n,e,t,r)=>{const a=t.filter(h=>h.produto&&h.quant&&h.valorUnit);if(a.length===0){alert("Não há itens para imprimir!");return}const l=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Nota Fiscal</title><style>@media print{@page{size:58mm auto;margin:5mm}body{margin:0;padding:0}}*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;font-size:11pt;line-height:1.4;max-width:58mm;margin:0 auto;padding:10px}.header{text-align:center;border-bottom:2px dashed #000;padding-bottom:1px;margin-bottom:1px}.header h1{font-size:16pt;font-weight:bold;margin-bottom:1px}.header p{font-size:10pt;margin:2px 0}.info-cliente{margin:1px 0;padding:1px 0;border-bottom:1px dashed #000}.info-cliente p{margin:5px 0}.itens{margin:2px 0}.itens-header{display:flex;justify-content:space-between;font-weight:bold;border-bottom:1px solid #000;padding-bottom:5px;margin-bottom:5px}.item{display:flex;justify-content:space-between;margin:1px 0;padding:1px 0}.item-info{flex:1}.item-nome{font-weight:bold}.item-detalhes{font-size:10pt;color:#333}.item-total{font-weight:bold;text-align:right;min-width:80px}.totais{margin:1px 0;padding:1px 0;border-top:2px solid #000}.total-linha{display:flex;justify-content:space-between;margin:1px 0;font-size:11pt}.total-linha.destaque{font-size:14pt;font-weight:bold;margin-top:10px;padding-top:1px;border-top:1px dashed #000}.footer{text-align:center;margin-top:2px;padding-top:3px;border-top:2px dashed #000;font-size:10pt}.agradecimento{font-weight:bold;margin-top:10px;font-size:12pt}</style></head><body><div class="header"><h1>EL HONORATO</h1><p>Comanda Nº ${e}</p><p>${new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"})} às ${new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</p></div><div class="info-cliente"><p><strong>Cliente:</strong> ${n.toUpperCase()}</p></div><div class="itens"><div class="itens-header"><span>ITEM</span><span>TOTAL</span></div>${a.map(h=>{const p=parseFloat(h.quant)||0,g=parseFloat(h.valorUnit)||0,y=p*g;return`<div class="item"><div class="item-info"><div class="item-nome">${h.produto}</div><div class="item-detalhes">${p}x ${g.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</div></div><div class="item-total">${y.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</div></div>`}).join("")}</div><div class="totais"><div class="total-linha"><span>Subtotal:</span><span>${r.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span></div><div class="total-linha"><span>Taxa de Serviço (10%)*:</span><span>${(r*.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span></div><div class="total-linha destaque"><span>TOTAL:</span><span>${(r*1.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span></div><div class="total-linha"><span>Com Cartão (+5%):</span><span>${(r*1.1*1.05).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span></div></div><div class="footer"><p class="agradecimento">VOLTE SEMPRE!</p></div><script>window.onload=function(){window.print();window.onafterprint=function(){window.close();}};<\/script></body></html>`,u=window.open("","_blank","width=300,height=600");u.document.write(l),u.document.close()};function U5(){const n=Np(),[e,t]=U.useState(!1),[r,a]=U.useState(""),[l,u]=U.useState(null),[h,p]=U.useState(null),[g,y]=U.useState(""),[v,E]=U.useState(!1),{listaClientes:T,criarCliente:R,excluirCliente:I}=Z3(),{impressoes:V,marcarImpresso:j}=e5(),[Y,$]=U.useState(!1);U.useEffect(()=>{const de=()=>{u(null),E(!1)};return(l!==null||v)&&window.addEventListener("click",de),()=>window.removeEventListener("click",de)},[l,v]);const ae=async()=>{if(r.trim()!=="")try{await R(r.trim()),a(""),t(!1)}catch(de){console.error("Erro do Firebase:",de),alert("Falha ao salvar no banco! Abra o Console (F12) para ver o erro.")}},ee=async de=>{await I(de),localStorage.removeItem(`comanda_${de}`)},le=de=>{p(de.id),y(de.nome),u(null)},D=()=>{!h||g.trim()===""||p(null)},C=de=>{de.key==="Enter"?D():de.key==="Escape"&&p(null)},x=de=>{de.key==="Enter"&&(de.preventDefault(),ae())},O=(de,Se)=>{de.stopPropagation(),u(l===Se?null:Se)},k=de=>{de.stopPropagation(),E(!v)},z=de=>{if(window.confirm(`Deseja arquivar a comanda "${de.nome}"?`)){const Se=JSON.parse(localStorage.getItem("comandasArquivadas")||"[]");Se.push({...de,dataArquivamento:new Date().toISOString()}),localStorage.setItem("comandasArquivadas",JSON.stringify(Se)),ee(de.id)}},P=(de,Se)=>{de.stopPropagation();const Q=`comanda_${Se.id}`,ue=localStorage.getItem(Q);if(!ue){alert("Não há dados para imprimir nesta comanda!");return}const _e=JSON.parse(ue),Oe=_e.filter(re=>re.produto&&re.quant&&re.valorUnit);if(Oe.length===0){alert("Não há itens para imprimir!");return}const L=Oe.reduce((re,he)=>re+(parseFloat(he.quant)||0)*(parseFloat(he.valorUnit)||0),0);L5(Se.nome,Se.id,_e,L)};return M.jsxs(m5,{children:[M.jsxs(y5,{children:[M.jsx(w5,{children:"COMANDAS"}),M.jsx(YT,{onClick:()=>{a(""),t(!0)},children:M.jsx(A5,{})}),M.jsx(YT,{onClick:k,children:M.jsx(R5,{})})]}),v&&M.jsxs(V5,{onClick:de=>de.stopPropagation(),children:[M.jsx(Ry,{onClick:()=>n("/comandas_elh/arquivos"),children:"Arquivados"}),M.jsx(Ry,{onClick:()=>n("/comandas_elh/total-dia"),children:"Total do Dia"}),M.jsx(Ry,{onClick:()=>n("/backup"),children:"Backup"})]}),T.map((de,Se)=>M.jsxs(x5,{index:Se,onClick:()=>!h&&n(`/comandas_elh/comanda/${de.id}`,{state:{nome:de.nome}}),children:[h===de.id?M.jsx(O5,{type:"text",value:g,onChange:Q=>y(Q.target.value),onBlur:D,onKeyDown:C,onClick:Q=>Q.stopPropagation(),autoFocus:!0}):M.jsxs(M.Fragment,{children:[de.nome,M.jsx(D5,{onClick:Q=>P(Q,de),title:"Imprimir Comanda",children:M.jsxs("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 24 24",fill:"#fffef7",stroke:"black",strokeWidth:"1.5",strokeLinecap:"round",strokeLinejoin:"round",children:[M.jsx("polyline",{points:"6 9 6 2 18 2 18 9"}),M.jsx("path",{d:"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}),M.jsx("rect",{x:"6",y:"14",width:"12",height:"8"})]})}),M.jsx(C5,{onClick:Q=>O(Q,de.id)})]}),l===de.id&&M.jsxs(P5,{onClick:Q=>Q.stopPropagation(),children:[M.jsx(Iy,{onClick:()=>le(de),children:"Editar"}),M.jsx(Iy,{onClick:()=>{window.confirm(`Deseja realmente excluir a comanda "${de.nome}"?`)&&ee(de.id)},children:"Apagar"}),M.jsx(Iy,{onClick:()=>z(de),children:"Arquivar"})]})]},de.id)),V.length>0&&M.jsxs(M5,{onClick:()=>$(de=>!de),title:"Pedidos para imprimir",children:[M.jsx(k5,{children:V.length}),M.jsxs("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 24 24",fill:"none",stroke:"#fff",strokeWidth:"2.5",strokeLinecap:"round",strokeLinejoin:"round",children:[M.jsx("polyline",{points:"6 9 6 2 18 2 18 9"}),M.jsx("path",{d:"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}),M.jsx("rect",{x:"6",y:"14",width:"12",height:"8"})]})]}),Y&&V.length>0&&M.jsx(g5,{impressoes:V,onImprimir:de=>{j(de),V.length===1&&$(!1)}}),e&&M.jsx(I5,{onClick:()=>t(!1),children:M.jsxs(_5,{onClick:de=>de.stopPropagation(),children:[M.jsx(T5,{style:{color:"#fffef7",textAlign:"center",paddingTop:"20px"},children:"NOVA COMANDA"}),M.jsxs(v5,{children:[M.jsx(b5,{style:{color:"black",textAlign:"left",paddingTop:"12px",paddingLeft:"10px"},children:"NOME:"}),M.jsx(S5,{type:"text",placeholder:"Digite o nome do cliente...",value:r,onChange:de=>a(de.target.value),onKeyDown:x,autoFocus:!0}),M.jsx(E5,{onClick:ae,children:M.jsx("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 30 30",fill:"#0ABF00",children:M.jsx("path",{fill:"#0ABF00",d:"M6.54 13.3c1.76,0.39 11.31,1.15 11.92,1.74 -0.98,0.9 -11.79,1.08 -12.65,2.14 -0.36,0.45 -1.05,1.83 -1.35,2.4 -0.86,1.69 -3.58,6.42 -3.27,7.69 1.14,0.74 3.22,-0.63 5.03,-1.39 1.62,-0.68 3.2,-1.43 4.79,-2.14l14.37 -6.35c1.11,-0.49 4.51,-1.54 3.21,-3.03 -0.58,-0.67 -3.49,-1.79 -4.62,-2.3 -2.1,-0.96 -20.98,-9.39 -21.68,-9.51 -1.55,-0.26 -1.27,1.04 -0.81,1.97 0.78,1.55 1.51,3.09 2.29,4.63 0.52,1.02 1.69,3.91 2.77,4.15z"})})})]})]})})]})}const z5=Z.div`
+`,L5=(n,e,t,r)=>{const a=t.filter(h=>h.produto&&h.quant&&h.valorUnit);if(a.length===0){alert("Não há itens para imprimir!");return}const l=`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Nota Fiscal - Comanda ${e}</title>
+        <style>
+          @media print {
+            @page {
+              size: 58mm auto;
+              margin: 5mm;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+          }
+
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+
+          body {
+            font-family: 'Arial', sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            max-width: 58mm;
+            margin: 0 auto;
+            padding: 10px;
+          }
+
+          .header {
+            text-align: center;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 1px;
+            margin-bottom: 1px;
+          }
+
+          .header h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin-bottom: 1px;
+          }
+
+          .header p {
+            font-size: 10pt;
+            margin: 2px 0;
+          }
+
+          .info-cliente {
+            margin: 1px 0;
+            padding: 1px 0;
+            border-bottom: 1px dashed #000;
+          }
+
+          .info-cliente p {
+            margin: 5px 0;
+          }
+
+          .info-cliente strong {
+            font-weight: bold;
+          }
+
+          .itens {
+            margin: 2px 0;
+          }
+
+          .itens-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+          }
+
+          .item {
+            display: flex;
+            justify-content: space-between;
+            margin: 1px 0;
+            padding: 1px 0;
+          }
+
+          .item-info {
+            flex: 1;
+          }
+
+          .item-nome {
+            font-weight: bold;
+            margin-bottom: 0px;
+          }
+
+          .item-detalhes {
+            font-size: 10pt;
+            color: #000;
+          }
+
+          .item-total {
+            font-weight: bold;
+            text-align: right;
+            min-width: 80px;
+          }
+
+          .linha-separadora {
+            border-top: 1px dashed #000;
+            margin: 1px 0;
+          }
+
+          .totais {
+            margin: 1px 0;
+            padding: 1px 0;
+            border-top: 2px solid #000;
+          }
+
+          .total-linha {
+            display: flex;
+            justify-content: space-between;
+            margin: 1px 0;
+            font-size: 11pt;
+          }
+
+          .total-linha.destaque {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 1px;
+            border-top: 1px dashed #000;
+          }
+
+          .footer {
+            text-align: center;
+            margin-top: 2px;
+            padding-top: 3px;
+            border-top: 2px dashed #000;
+            font-size: 10pt;
+          }
+
+          .footer p {
+            margin: 5px 0;
+          }
+
+          .agradecimento {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 12pt;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>EL HONORATO</h1>
+          <p>Comanda Nº ${e}</p>
+          <p>${new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"numeric"})} às ${new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</p>
+        </div>
+
+        <div class="info-cliente">
+          <p><strong>Cliente:</strong> ${n.toUpperCase()}</p>
+        </div>
+
+        <div class="itens">
+          <div class="itens-header">
+            <span>ITEM</span>
+            <span>TOTAL</span>
+          </div>
+
+          ${a.map(h=>{const p=parseFloat(h.quant)||0,g=parseFloat(h.valorUnit)||0,y=p*g;return`
+                <div class="item">
+                  <div class="item-info">
+                    <div class="item-nome">${h.produto}</div>
+                    <div class="item-detalhes">
+                      ${p}x ${g.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+                    </div>
+                  </div>
+                  <div class="item-total">
+                    ${y.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+                  </div>
+                </div>
+              `}).join("")}
+        </div>
+
+<!--
+        <div class="totais">
+          <div class="total-linha">
+            <span>Subtotal:</span>
+            <span>${r.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+          </div>
+
+          <div class="total-linha">
+            <span>Taxa de Serviço (10%)*:</span>
+            <span>${(r*.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+          </div>
+-->
+
+          <div class="total-linha destaque">
+            <span>TOTAL:</span>
+<!--            
+              <span>${(r*1.1).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+-->
+                <span>${r.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+          </div>
+
+          <div class="linha-separadora"></div>
+
+          <div class="total-linha">
+            <span>Com Cartão (+5%):</span>
+<!--
+            <span>${(r*1.1*1.05).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+-->
+                <span>${(r*1.05).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}</span>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p class="agradecimento">VOLTE SEMPRE!</p>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+            window.onafterprint = function() {
+              window.close();
+            };
+          };
+        <\/script>
+      </body>
+      </html>
+    `,u=window.open("","_blank","width=900,height=600");u.document.write(l),u.document.close()};function U5(){const n=Np(),[e,t]=U.useState(!1),[r,a]=U.useState(""),[l,u]=U.useState(null),[h,p]=U.useState(null),[g,y]=U.useState(""),[v,E]=U.useState(!1),{listaClientes:T,criarCliente:R,excluirCliente:I}=Z3(),{impressoes:V,marcarImpresso:j}=e5(),[Y,$]=U.useState(!1);U.useEffect(()=>{const de=()=>{u(null),E(!1)};return(l!==null||v)&&window.addEventListener("click",de),()=>window.removeEventListener("click",de)},[l,v]);const ae=async()=>{if(r.trim()!=="")try{await R(r.trim()),a(""),t(!1)}catch(de){console.error("Erro do Firebase:",de),alert("Falha ao salvar no banco! Abra o Console (F12) para ver o erro.")}},ee=async de=>{await I(de),localStorage.removeItem(`comanda_${de}`)},le=de=>{p(de.id),y(de.nome),u(null)},D=()=>{!h||g.trim()===""||p(null)},C=de=>{de.key==="Enter"?D():de.key==="Escape"&&p(null)},x=de=>{de.key==="Enter"&&(de.preventDefault(),ae())},O=(de,Se)=>{de.stopPropagation(),u(l===Se?null:Se)},k=de=>{de.stopPropagation(),E(!v)},z=de=>{if(window.confirm(`Deseja arquivar a comanda "${de.nome}"?`)){const Se=JSON.parse(localStorage.getItem("comandasArquivadas")||"[]");Se.push({...de,dataArquivamento:new Date().toISOString()}),localStorage.setItem("comandasArquivadas",JSON.stringify(Se)),ee(de.id)}},P=(de,Se)=>{de.stopPropagation();const Q=`comanda_${Se.id}`,ue=localStorage.getItem(Q);if(!ue){alert("Não há dados para imprimir nesta comanda!");return}const _e=JSON.parse(ue),Oe=_e.filter(re=>re.produto&&re.quant&&re.valorUnit);if(Oe.length===0){alert("Não há itens para imprimir!");return}const L=Oe.reduce((re,he)=>re+(parseFloat(he.quant)||0)*(parseFloat(he.valorUnit)||0),0);L5(Se.nome,Se.id,_e,L)};return M.jsxs(m5,{children:[M.jsxs(y5,{children:[M.jsx(w5,{children:"COMANDAS"}),M.jsx(YT,{onClick:()=>{a(""),t(!0)},children:M.jsx(A5,{})}),M.jsx(YT,{onClick:k,children:M.jsx(R5,{})})]}),v&&M.jsxs(V5,{onClick:de=>de.stopPropagation(),children:[M.jsx(Ry,{onClick:()=>n("/comandas_elh/arquivos"),children:"Arquivados"}),M.jsx(Ry,{onClick:()=>n("/comandas_elh/total-dia"),children:"Total do Dia"}),M.jsx(Ry,{onClick:()=>n("/backup"),children:"Backup"})]}),T.map((de,Se)=>M.jsxs(x5,{index:Se,onClick:()=>!h&&n(`/comandas_elh/comanda/${de.id}`,{state:{nome:de.nome}}),children:[h===de.id?M.jsx(O5,{type:"text",value:g,onChange:Q=>y(Q.target.value),onBlur:D,onKeyDown:C,onClick:Q=>Q.stopPropagation(),autoFocus:!0}):M.jsxs(M.Fragment,{children:[de.nome,M.jsx(D5,{onClick:Q=>P(Q,de),title:"Imprimir Comanda",children:M.jsxs("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 24 24",fill:"#fffef7",stroke:"black",strokeWidth:"1.5",strokeLinecap:"round",strokeLinejoin:"round",children:[M.jsx("polyline",{points:"6 9 6 2 18 2 18 9"}),M.jsx("path",{d:"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}),M.jsx("rect",{x:"6",y:"14",width:"12",height:"8"})]})}),M.jsx(C5,{onClick:Q=>O(Q,de.id)})]}),l===de.id&&M.jsxs(P5,{onClick:Q=>Q.stopPropagation(),children:[M.jsx(Iy,{onClick:()=>le(de),children:"Editar"}),M.jsx(Iy,{onClick:()=>{window.confirm(`Deseja realmente excluir a comanda "${de.nome}"?`)&&ee(de.id)},children:"Apagar"}),M.jsx(Iy,{onClick:()=>z(de),children:"Arquivar"})]})]},de.id)),V.length>0&&M.jsxs(M5,{onClick:()=>$(de=>!de),title:"Pedidos para imprimir",children:[M.jsx(k5,{children:V.length}),M.jsxs("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 24 24",fill:"none",stroke:"#fff",strokeWidth:"2.5",strokeLinecap:"round",strokeLinejoin:"round",children:[M.jsx("polyline",{points:"6 9 6 2 18 2 18 9"}),M.jsx("path",{d:"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}),M.jsx("rect",{x:"6",y:"14",width:"12",height:"8"})]})]}),Y&&V.length>0&&M.jsx(g5,{impressoes:V,onImprimir:de=>{j(de),V.length===1&&$(!1)}}),e&&M.jsx(I5,{onClick:()=>t(!1),children:M.jsxs(_5,{onClick:de=>de.stopPropagation(),children:[M.jsx(T5,{style:{color:"#fffef7",textAlign:"center",paddingTop:"20px"},children:"NOVA COMANDA"}),M.jsxs(v5,{children:[M.jsx(b5,{style:{color:"black",textAlign:"left",paddingTop:"12px",paddingLeft:"10px"},children:"NOME:"}),M.jsx(S5,{type:"text",placeholder:"Digite o nome do cliente...",value:r,onChange:de=>a(de.target.value),onKeyDown:x,autoFocus:!0}),M.jsx(E5,{onClick:ae,children:M.jsx("svg",{xmlns:"http://www.w3.org/2000/svg",viewBox:"0 0 30 30",fill:"#0ABF00",children:M.jsx("path",{fill:"#0ABF00",d:"M6.54 13.3c1.76,0.39 11.31,1.15 11.92,1.74 -0.98,0.9 -11.79,1.08 -12.65,2.14 -0.36,0.45 -1.05,1.83 -1.35,2.4 -0.86,1.69 -3.58,6.42 -3.27,7.69 1.14,0.74 3.22,-0.63 5.03,-1.39 1.62,-0.68 3.2,-1.43 4.79,-2.14l14.37 -6.35c1.11,-0.49 4.51,-1.54 3.21,-3.03 -0.58,-0.67 -3.49,-1.79 -4.62,-2.3 -2.1,-0.96 -20.98,-9.39 -21.68,-9.51 -1.55,-0.26 -1.27,1.04 -0.81,1.97 0.78,1.55 1.51,3.09 2.29,4.63 0.52,1.02 1.69,3.91 2.77,4.15z"})})})]})]})})]})}const z5=Z.div`
   background-color: #fffef7;
   min-height: 100vh;
   width: 100vw;
