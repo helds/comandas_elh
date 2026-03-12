@@ -110,7 +110,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
 
           .item-detalhes {
             font-size: 10pt;
-            color: #333;
+            color: #000;
           }
 
           .item-total {
@@ -217,6 +217,7 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
             .join('')}
         </div>
 
+<!--
         <div class="totais">
           <div class="total-linha">
             <span>Subtotal:</span>
@@ -233,10 +234,17 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
               currency: 'BRL',
             })}</span>
           </div>
+-->
 
           <div class="total-linha destaque">
             <span>TOTAL:</span>
-            <span>${(totalComanda * 1.1).toLocaleString('pt-BR', {
+<!--            
+              <span>${(totalComanda * 1.1).toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            })}</span>
+-->
+                <span>${(totalComanda).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}</span>
@@ -246,7 +254,13 @@ const ImpressaoNotaFiscal = ({ nomeCliente, comandaId, linhas, totalComanda }) =
 
           <div class="total-linha">
             <span>Com Cartão (+5%):</span>
+<!--
             <span>${(totalComanda * 1.1 * 1.05).toLocaleString('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            })}</span>
+-->
+                <span>${(totalComanda * 1.05).toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL',
             })}</span>
