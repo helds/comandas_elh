@@ -4,7 +4,7 @@ import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-tabl
 import { useFiltroBusca } from './useFiltroBusca';
 import { cardapio } from './database';
 
-/* ---------- Estilos (sem alterações) ---------- */
+/* ---------- Estilos ---------- */
 
 const TabelaContainer = styled.div`
   width: 100%;
@@ -53,6 +53,14 @@ const Corpo = styled.tbody`
   }
 `;
 
+/* ✅ FIX 3: Linha que recebe prop `pago` — fica opaca e tachada */
+const TrLinha = styled.tr`
+  position: relative;
+  opacity: ${(props) => (props.$pago ? 0.38 : 1)};
+  transition: opacity 0.2s ease;
+  z-index: ${(props) => (props.$ativa ? 5 : 'auto')};
+`;
+
 const CorpoCell = styled.td`
   padding: 10px 6px;
   border-right: 3px solid #03941b;
@@ -60,6 +68,8 @@ const CorpoCell = styled.td`
   font-size: 23pt;
   white-space: nowrap;
   text-overflow: ellipsis;
+  /* ✅ FIX 3: Tachado aplicado via classe no tr pai */
+  text-decoration: inherit;
 
   &:last-child {
     border-right: none;
@@ -86,6 +96,55 @@ const CorpoCell = styled.td`
   input[type='number']::-webkit-inner-spin-button,
   input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: inner-spin-button;
+  }
+`;
+
+/* ✅ FIX 3: Célula do valor total — precisa de position relative pro botão */
+const CellValorTotal = styled(CorpoCell)`
+  position: relative;
+`;
+
+/* ✅ FIX 3: Texto do valor total — tachado quando pago */
+const TextoValorTotal = styled.span`
+  text-decoration: ${(props) => (props.$pago ? 'line-through' : 'none')};
+`;
+
+/* ✅ FIX 3: Botão ✅ — só aparece no hover da linha, posicionado no canto direito */
+const BotaoPago = styled.button`
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  border-radius: 4px;
+  /* Fade-in suave ao aparecer */
+  animation: fadeIn 0.2s ease forwards;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  filter: none;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-50%) scale(0.7);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+    }
+  }
+
+  &:hover {
+    transform: translateY(-50%) scale(1.3);
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(1.1);
   }
 `;
 
@@ -137,49 +196,46 @@ const SugestaoItem = styled.li`
 function TabelaComanda({ onTotalChange, comandaId }) {
   const TOTAL_LINHAS = 80;
 
-  const linhaVazia = { cod: '', quant: '', produto: '', valorUnit: '' };
-  
-  // Função para carregar dados do localStorage
+  const linhaVazia = { cod: '', quant: '', produto: '', valorUnit: '', pago: false };
+
   const carregarDados = () => {
-    if (!comandaId) return Array.from({ length: TOTAL_LINHAS }, () => linhaVazia);
-    
+    if (!comandaId) return Array.from({ length: TOTAL_LINHAS }, () => ({ ...linhaVazia }));
+
     try {
       const chave = `comanda_${comandaId}`;
       const dadosSalvos = localStorage.getItem(chave);
-      
+
       if (dadosSalvos) {
         const dadosParseados = JSON.parse(dadosSalvos);
-        // Garante que sempre temos 80 linhas
         if (dadosParseados.length === TOTAL_LINHAS) {
-          return dadosParseados;
+          // ✅ FIX 3: Garante que todas as linhas têm o campo `pago` (compatibilidade retroativa)
+          return dadosParseados.map(l => ({ pago: false, ...l }));
         }
       }
     } catch (erro) {
       console.error('Erro ao carregar dados do localStorage:', erro);
     }
-    
-    return Array.from({ length: TOTAL_LINHAS }, () => linhaVazia);
+
+    return Array.from({ length: TOTAL_LINHAS }, () => ({ ...linhaVazia }));
   };
 
   const [linhas, setLinhas] = useState(carregarDados);
-  
+
   const [linhaAtivaIndex, setLinhaAtivaIndex] = useState(null);
   const [editingCell, setEditingCell] = useState(null);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
+  // ✅ FIX 3: Controla qual linha está com mouse em cima
+  const [linhaHover, setLinhaHover] = useState(null);
+
   const { termoBusca, setTermoBusca, resultadosFiltrados } = useFiltroBusca(cardapio);
-  
+
   const inputRef = useRef(null);
   const sugestoesRef = useRef(null);
-  
-  // ==========================================================
-  // AQUI: 1. Adicionamos uma ref para guardar o timeout do blur
-  // ==========================================================
   const blurTimeoutRef = useRef(null);
 
-  // Salva os dados no localStorage sempre que as linhas mudarem
+  // Salva no localStorage sempre que as linhas mudarem
   useEffect(() => {
     if (!comandaId) return;
-    
     try {
       const chave = `comanda_${comandaId}`;
       localStorage.setItem(chave, JSON.stringify(linhas));
@@ -188,9 +244,10 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     }
   }, [linhas, comandaId]);
 
-  // Calcula o total da comanda
+  // ✅ FIX 3: Calcula o total EXCLUINDO linhas marcadas como pagas
   useEffect(() => {
     const total = linhas.reduce((soma, linha) => {
+      if (linha.pago) return soma; // ignora itens pagos
       const quantidade = parseFloat(linha.quant) || 0;
       const valor = parseFloat(linha.valorUnit) || 0;
       return soma + quantidade * valor;
@@ -198,56 +255,41 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     if (onTotalChange) onTotalChange(total);
   }, [linhas, onTotalChange]);
 
-  // Reset do índice selecionado quando os resultados mudam
   useEffect(() => {
     setSelectedSuggestionIndex(0);
   }, [resultadosFiltrados]);
 
-  // Scroll automático para item selecionado no menu
   useEffect(() => {
     if (sugestoesRef.current && resultadosFiltrados.length > 0) {
       const selectedElement = sugestoesRef.current.children[selectedSuggestionIndex];
       if (selectedElement) {
-        selectedElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest'
-        });
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     }
   }, [selectedSuggestionIndex, resultadosFiltrados]);
 
-  // Gerenciamento de teclado para o menu de sugestões
   const handleKeyDown = (e, i) => {
-    // Só processa setas e Enter se o menu estiver visível
     if (linhaAtivaIndex === i && resultadosFiltrados.length > 0) {
-      switch(e.key) {
+      switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedSuggestionIndex(prev => 
-            (prev + 1) % resultadosFiltrados.length
-          );
+          setSelectedSuggestionIndex(prev => (prev + 1) % resultadosFiltrados.length);
           break;
-        
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedSuggestionIndex(prev => 
-            (prev - 1 + resultadosFiltrados.length) % resultadosFiltrados.length
-          );
+          setSelectedSuggestionIndex(prev => (prev - 1 + resultadosFiltrados.length) % resultadosFiltrados.length);
           break;
-        
         case 'Enter':
           e.preventDefault();
           if (resultadosFiltrados[selectedSuggestionIndex]) {
             selecionarProduto(i, resultadosFiltrados[selectedSuggestionIndex]);
           }
           break;
-        
         case 'Escape':
           e.preventDefault();
           setLinhaAtivaIndex(null);
           setTermoBusca('');
           break;
-        
         default:
           break;
       }
@@ -268,19 +310,20 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     setLinhas((old) =>
       old.map((l, idx) =>
         idx === i
-          ? {
-              ...l,
-              produto: produto.nome,
-              cod: produto.id,
-              valorUnit: produto.preco,
-              quant: l.quant || 1,
-            }
+          ? { ...l, produto: produto.nome, cod: produto.id, valorUnit: produto.preco, quant: l.quant || 1 }
           : l
       )
     );
     setTermoBusca('');
     setLinhaAtivaIndex(null);
     setSelectedSuggestionIndex(0);
+  };
+
+  // ✅ FIX 3: Alterna o estado `pago` de uma linha
+  const togglePago = (i) => {
+    setLinhas((old) =>
+      old.map((l, idx) => (idx === i ? { ...l, pago: !l.pago } : l))
+    );
   };
 
   const colunas = useMemo(
@@ -318,10 +361,7 @@ function TabelaComanda({ onTotalChange, comandaId }) {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <CabecalhoCell
-                  key={header.id}
-                  style={{ width: header.column.columnDef.size }}
-                >
+                <CabecalhoCell key={header.id} style={{ width: header.column.columnDef.size }}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
                 </CabecalhoCell>
               ))}
@@ -330,100 +370,126 @@ function TabelaComanda({ onTotalChange, comandaId }) {
         </Cabecalho>
 
         <Corpo>
-          {table.getRowModel().rows.map((row, i) => (
-            <tr key={row.id} style={{ position: 'relative', zIndex: linhaAtivaIndex === i ? 5 : 'auto' }}>
-              {row.getVisibleCells().map((cell) => {
-                const colId = cell.column.id;
-                const isTotal = colId === 'valorTotal';
-                const isEditing = editingCell?.rowIndex === i && editingCell?.colId === colId;
+          {table.getRowModel().rows.map((row, i) => {
+            const linha = linhas[i];
+            const temProduto = !!linha.produto;
+            const mostrarBotao = linhaHover === i && temProduto;
 
-                if (colId === 'valorUnit') {
-                  return (
-                    <CorpoCell key={cell.id}>
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={linhas[i].valorUnit}
-                          autoFocus
-                          onBlur={() => setEditingCell(null)}
-                          onChange={(e) => atualizarCelula(i, 'valorUnit', e.target.value)}
-                        />
-                      ) : (
-                        <div
-                          onClick={() => setEditingCell({ rowIndex: i, colId })}
-                          style={{ cursor: 'pointer', width: '100%', height: '100%' }}
-                        >
-                          {linhas[i].valorUnit
-                            ? parseFloat(linhas[i].valorUnit).toLocaleString('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL',
-                              })
-                            : ''}
-                        </div>
-                      )}
-                    </CorpoCell>
-                  );
-                }
+            return (
+              // ✅ FIX 3: TrLinha recebe $pago e $ativa; eventos de hover controlam linhaHover
+              <TrLinha
+                key={row.id}
+                $pago={linha.pago}
+                $ativa={linhaAtivaIndex === i}
+                onMouseEnter={() => setLinhaHover(i)}
+                onMouseLeave={() => setLinhaHover(null)}
+              >
+                {row.getVisibleCells().map((cell) => {
+                  const colId = cell.column.id;
+                  const isTotal = colId === 'valorTotal';
+                  const isEditing = editingCell?.rowIndex === i && editingCell?.colId === colId;
 
-                if (colId === 'produto') {
-                  return (
-                    <CorpoCell key={cell.id}>
-                      <InputContainer>
-                        <input
-                          ref={linhaAtivaIndex === i ? inputRef : null}
-                          type="text"
-                          value={linhaAtivaIndex === i ? termoBusca : linhas[i].produto}
-                          onFocus={() => {
-                            // ==================================================
-                            // AQUI: 2. Limpamos o timeout de blur anterior
-                            // ==================================================
-                            clearTimeout(blurTimeoutRef.current);
-                            
-                            setLinhaAtivaIndex(i);
-                            setTermoBusca(linhas[i].produto || '');
-                            setSelectedSuggestionIndex(0);
-                          }}
-                          onChange={(e) => {
-                            const valor = e.target.value;
-                            setTermoBusca(valor);
-                            if (valor === '') limparLinha(i);
-                            else atualizarCelula(i, 'produto', valor);
-                          }}
-                          onKeyDown={(e) => handleKeyDown(e, i)}
-                          // ====================================================================
-                          // AQUI: 3. Guardamos o ID do novo timeout quando o blur ocorre
-                          // ====================================================================
-                          onBlur={() => {
-                            blurTimeoutRef.current = setTimeout(() => {
-                              setLinhaAtivaIndex(null);
-                            }, 150);
-                          }}
-                        />
-                        {linhaAtivaIndex === i && resultadosFiltrados.length > 0 && (
-                          <SugestoesLista ref={sugestoesRef}>
-                            {resultadosFiltrados.map((item, index) => (
-                              <SugestaoItem
-                                key={item.id}
-                                $selected={index === selectedSuggestionIndex}
-                                onMouseDown={() => selecionarProduto(i, item)}
-                                onMouseEnter={() => setSelectedSuggestionIndex(index)}
-                              >
-                                {item.nome}
-                              </SugestaoItem>
-                            ))}
-                          </SugestoesLista>
+                  if (colId === 'valorUnit') {
+                    return (
+                      <CorpoCell key={cell.id}>
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={linhas[i].valorUnit}
+                            autoFocus
+                            onBlur={() => setEditingCell(null)}
+                            onChange={(e) => atualizarCelula(i, 'valorUnit', e.target.value)}
+                          />
+                        ) : (
+                          <div
+                            onClick={() => setEditingCell({ rowIndex: i, colId })}
+                            style={{ cursor: 'pointer', width: '100%', height: '100%' }}
+                          >
+                            {linhas[i].valorUnit
+                              ? parseFloat(linhas[i].valorUnit).toLocaleString('pt-BR', {
+                                  style: 'currency',
+                                  currency: 'BRL',
+                                })
+                              : ''}
+                          </div>
                         )}
-                      </InputContainer>
-                    </CorpoCell>
-                  );
-                }
+                      </CorpoCell>
+                    );
+                  }
 
-                return (
-                  <CorpoCell key={cell.id}>
-                    {isTotal ? (
-                      flexRender(cell.column.columnDef.cell, cell.getContext())
-                    ) : (
+                  if (colId === 'produto') {
+                    return (
+                      <CorpoCell key={cell.id}>
+                        <InputContainer>
+                          <input
+                            ref={linhaAtivaIndex === i ? inputRef : null}
+                            type="text"
+                            value={linhaAtivaIndex === i ? termoBusca : linhas[i].produto}
+                            onFocus={() => {
+                              clearTimeout(blurTimeoutRef.current);
+                              setLinhaAtivaIndex(i);
+                              setTermoBusca(linhas[i].produto || '');
+                              setSelectedSuggestionIndex(0);
+                            }}
+                            onChange={(e) => {
+                              const valor = e.target.value;
+                              setTermoBusca(valor);
+                              if (valor === '') limparLinha(i);
+                              else atualizarCelula(i, 'produto', valor);
+                            }}
+                            onKeyDown={(e) => handleKeyDown(e, i)}
+                            onBlur={() => {
+                              blurTimeoutRef.current = setTimeout(() => {
+                                setLinhaAtivaIndex(null);
+                              }, 150);
+                            }}
+                          />
+                          {linhaAtivaIndex === i && resultadosFiltrados.length > 0 && (
+                            <SugestoesLista ref={sugestoesRef}>
+                              {resultadosFiltrados.map((item, index) => (
+                                <SugestaoItem
+                                  key={item.id}
+                                  $selected={index === selectedSuggestionIndex}
+                                  onMouseDown={() => selecionarProduto(i, item)}
+                                  onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                                >
+                                  {item.nome}
+                                </SugestaoItem>
+                              ))}
+                            </SugestoesLista>
+                          )}
+                        </InputContainer>
+                      </CorpoCell>
+                    );
+                  }
+
+                  // ✅ FIX 3: Coluna "VALOR TOTAL" — renderiza botão ✅ no hover
+                  if (isTotal) {
+                    return (
+                      <CellValorTotal key={cell.id}>
+                        <TextoValorTotal $pago={linha.pago}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TextoValorTotal>
+
+                        {mostrarBotao && (
+                          <BotaoPago
+                            title={linha.pago ? 'Desmarcar como pago' : 'Marcar como pago'}
+                            onMouseDown={(e) => {
+                              // onMouseDown evita que o blur do input dispare antes do clique
+                              e.preventDefault();
+                              togglePago(i);
+                            }}
+                          >
+                            {linha.pago ? '↩️' : '✅'}
+                          </BotaoPago>
+                        )}
+                      </CellValorTotal>
+                    );
+                  }
+
+                  return (
+                    <CorpoCell key={cell.id}>
                       <input
                         type={colId === 'quant' || colId === 'cod' ? 'number' : 'text'}
                         min={0}
@@ -445,12 +511,12 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                           atualizarCelula(i, colId, valor);
                         }}
                       />
-                    )}
-                  </CorpoCell>
-                );
-              })}
-            </tr>
-          ))}
+                    </CorpoCell>
+                  );
+                })}
+              </TrLinha>
+            );
+          })}
         </Corpo>
       </TabelaEstilizada>
     </TabelaContainer>

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import VoltarIcon from './assets/voltar.svg?react';
 import IconeBolaP from './assets/iconeBolaP.svg?react';
 
-// --- Styled Components (com pequenas melhorias) ---
+// --- Styled Components ---
 
 const Fundo = styled.div`
   background-color: #fffef7;
@@ -176,6 +176,12 @@ const MensagemVazia = styled.p`
   width: 100%;
 `;
 
+// ✅ FIX 1: Mapa para converter nome do mês em número, permitindo ordenação correta
+const ORDEM_MESES = {
+  'Janeiro': 1, 'Fevereiro': 2, 'Março': 3, 'Abril': 4,
+  'Maio': 5, 'Junho': 6, 'Julho': 7, 'Agosto': 8,
+  'Setembro': 9, 'Outubro': 10, 'Novembro': 11, 'Dezembro': 12
+};
 
 function PaginaArquivos() {
   const navigate = useNavigate();
@@ -183,7 +189,6 @@ function PaginaArquivos() {
   const [comandasOrganizadas, setComandasOrganizadas] = useState({});
   const [menuAbertoId, setMenuAbertoId] = useState(null);
 
-  // Carrega as comandas arquivadas do localStorage na inicialização
   useEffect(() => {
     const dadosSalvos = localStorage.getItem('comandasArquivadas');
     if (dadosSalvos) {
@@ -191,20 +196,19 @@ function PaginaArquivos() {
     }
   }, []);
 
-  // ✅ CORREÇÃO PRINCIPAL: Organiza as comandas sempre que a lista 'arquivadas' mudar
   useEffect(() => {
     const organizadas = arquivadas.reduce((acc, comanda) => {
       const data = new Date(comanda.dataArquivamento);
       const ano = data.getFullYear();
       const mes = data.toLocaleString('pt-BR', { month: 'long' });
       const dia = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-      
+
       const mesCapitalizado = mes.charAt(0).toUpperCase() + mes.slice(1);
 
       if (!acc[ano]) acc[ano] = {};
       if (!acc[ano][mesCapitalizado]) acc[ano][mesCapitalizado] = {};
       if (!acc[ano][mesCapitalizado][dia]) acc[ano][mesCapitalizado][dia] = [];
-      
+
       acc[ano][mesCapitalizado][dia].push(comanda);
       return acc;
     }, {});
@@ -217,23 +221,31 @@ function PaginaArquivos() {
   };
 
   const desarquivarComanda = (comandaParaDesarquivar) => {
-    // Adiciona a comanda de volta à lista de comandas ativas
     const comandasAtivas = JSON.parse(localStorage.getItem('comandas') || '[]');
     const novasAtivas = [...comandasAtivas, { id: comandaParaDesarquivar.id, nome: comandaParaDesarquivar.nome }];
     localStorage.setItem('comandas', JSON.stringify(novasAtivas));
 
-    // Remove da lista de arquivadas
     const novasArquivadas = arquivadas.filter(c => c.id !== comandaParaDesarquivar.id);
     localStorage.setItem('comandasArquivadas', JSON.stringify(novasArquivadas));
-    setArquivadas(novasArquivadas); // Atualiza o estado para disparar a reorganização
+    setArquivadas(novasArquivadas);
   };
 
   const deletarComanda = (comandaParaDeletar) => {
     if (window.confirm(`Tem certeza que deseja excluir a comanda "${comandaParaDeletar.nome}" permanentemente?`)) {
       const novasArquivadas = arquivadas.filter(c => c.id !== comandaParaDeletar.id);
       localStorage.setItem('comandasArquivadas', JSON.stringify(novasArquivadas));
-      setArquivadas(novasArquivadas); // Atualiza o estado
+      setArquivadas(novasArquivadas);
     }
+  };
+
+  // ✅ FIX 1: Ordena dias no formato "DD/MM" do mais recente ao mais antigo
+  const ordenarDias = (dias) => {
+    return dias.sort((a, b) => {
+      const [diaA, mesA] = a.split('/').map(Number);
+      const [diaB, mesB] = b.split('/').map(Number);
+      if (mesB !== mesA) return mesB - mesA;
+      return diaB - diaA;
+    });
   };
 
   return (
@@ -249,46 +261,50 @@ function PaginaArquivos() {
         <MensagemVazia>Nenhuma comanda arquivada.</MensagemVazia>
       ) : (
         Object.keys(comandasOrganizadas)
-          .sort((a, b) => b - a) // Ordena os anos do mais recente para o mais antigo
+          .sort((a, b) => b - a) // Ano: mais recente primeiro
           .map(ano => (
             <SecaoAno key={ano}>
               <TituloAno>{ano}</TituloAno>
-              {Object.keys(comandasOrganizadas[ano]).map(mes => (
-                <SecaoMes key={mes}>
-                  <TituloMes>{mes}</TituloMes>
-                  {Object.keys(comandasOrganizadas[ano][mes]).map(dia => (
-                    <SecaoDia key={dia}>
-                      <TituloDia>📅 {dia}</TituloDia>
-                      <GridComandas>
-                        {comandasOrganizadas[ano][mes][dia].map((comanda, index) => (
-                          <QuadradoComanda
-                            key={comanda.id}
-                            index={index}
-                            onClick={() => navigate(`/comandas_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
-                          >
-                            {comanda.nome}
-                            <InfoComanda>
-                              {new Date(comanda.dataArquivamento).toLocaleTimeString('pt-BR', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </InfoComanda>
+              {/* ✅ FIX 1: Ordena meses pelo número do mês (mais recente primeiro) */}
+              {Object.keys(comandasOrganizadas[ano])
+                .sort((a, b) => (ORDEM_MESES[b] || 0) - (ORDEM_MESES[a] || 0))
+                .map(mes => (
+                  <SecaoMes key={mes}>
+                    <TituloMes>{mes}</TituloMes>
+                    {/* ✅ FIX 1: Ordena dias do mais recente ao mais antigo */}
+                    {ordenarDias(Object.keys(comandasOrganizadas[ano][mes])).map(dia => (
+                      <SecaoDia key={dia}>
+                        <TituloDia>📅 {dia}</TituloDia>
+                        <GridComandas>
+                          {comandasOrganizadas[ano][mes][dia].map((comanda, index) => (
+                            <QuadradoComanda
+                              key={comanda.id}
+                              index={index}
+                              onClick={() => navigate(`/comandas_elh/comanda/${comanda.id}`, { state: { nome: comanda.nome } })}
+                            >
+                              {comanda.nome}
+                              <InfoComanda>
+                                {new Date(comanda.dataArquivamento).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </InfoComanda>
 
-                            <StyledBola onClick={(e) => toggleMenu(e, comanda.id)} />
+                              <StyledBola onClick={(e) => toggleMenu(e, comanda.id)} />
 
-                            {menuAbertoId === comanda.id && (
-                              <MenuSuspenso onClick={(e) => e.stopPropagation()}>
-                                <MenuItem onClick={() => desarquivarComanda(comanda)}>Desarquivar</MenuItem>
-                                <MenuItem onClick={() => deletarComanda(comanda)}>Excluir</MenuItem>
-                              </MenuSuspenso>
-                            )}
-                          </QuadradoComanda>
-                        ))}
-                      </GridComandas>
-                    </SecaoDia>
-                  ))}
-                </SecaoMes>
-              ))}
+                              {menuAbertoId === comanda.id && (
+                                <MenuSuspenso onClick={(e) => e.stopPropagation()}>
+                                  <MenuItem onClick={() => desarquivarComanda(comanda)}>Desarquivar</MenuItem>
+                                  <MenuItem onClick={() => deletarComanda(comanda)}>Excluir</MenuItem>
+                                </MenuSuspenso>
+                              )}
+                            </QuadradoComanda>
+                          ))}
+                        </GridComandas>
+                      </SecaoDia>
+                    ))}
+                  </SecaoMes>
+                ))}
             </SecaoAno>
           ))
       )}

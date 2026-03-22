@@ -230,18 +230,17 @@ function TotalDias() {
   }, []);
 
   const calcularTotaisPorDia = () => {
-    // Pega todas as comandas ativas e arquivadas
     const comandasAtivas = JSON.parse(localStorage.getItem('comandas') || '[]');
     const comandasArquivadas = JSON.parse(localStorage.getItem('comandasArquivadas') || '[]');
-    
+
     const todasComandas = [...comandasAtivas, ...comandasArquivadas];
-    
+
     const totaisPorDia = {};
 
     todasComandas.forEach(comanda => {
       const chave = `comanda_${comanda.id}`;
       const dadosSalvos = localStorage.getItem(chave);
-      
+
       if (dadosSalvos) {
         const linhas = JSON.parse(dadosSalvos);
         const linhasPreenchidas = linhas.filter(
@@ -249,37 +248,40 @@ function TotalDias() {
         );
 
         if (linhasPreenchidas.length > 0) {
+          // ✅ FIX 2: Desconta itens marcados como pagos (pago: true) do somatório
           const totalComanda = linhasPreenchidas.reduce((soma, linha) => {
+            if (linha.pago) return soma; // item já pago: não soma
             const quantidade = parseFloat(linha.quant) || 0;
             const valor = parseFloat(linha.valorUnit) || 0;
             return soma + quantidade * valor;
           }, 0);
 
-          // Define a data (usa data de arquivamento se existir, senão usa a data atual)
-          const dataComanda = comanda.dataArquivamento 
+          // ✅ FIX 2: Para comandas arquivadas usa a data de arquivamento;
+          // para ativas usa a data atual (comportamento original preservado)
+          const dataComanda = comanda.dataArquivamento
             ? new Date(comanda.dataArquivamento)
             : new Date();
-          
+
           const dia = dataComanda.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric'
           });
 
-          if (!totaisPorDia[dia]) {
-            totaisPorDia[dia] = {
-              comandas: [],
-              total: 0
-            };
+          // Só cria entrada no dia se houver valor a mostrar
+          if (totalComanda > 0 || linhasPreenchidas.some(l => !l.pago)) {
+            if (!totaisPorDia[dia]) {
+              totaisPorDia[dia] = { comandas: [], total: 0 };
+            }
+
+            totaisPorDia[dia].comandas.push({
+              nome: comanda.nome,
+              valor: totalComanda,
+              id: comanda.id
+            });
+
+            totaisPorDia[dia].total += totalComanda;
           }
-
-          totaisPorDia[dia].comandas.push({
-            nome: comanda.nome,
-            valor: totalComanda,
-            id: comanda.id
-          });
-
-          totaisPorDia[dia].total += totalComanda;
         }
       }
     });
@@ -311,130 +313,30 @@ function TotalDias() {
         <title>Relatório - Total do Dia</title>
         <style>
           @media print {
-            @page {
-              size: A4;
-              margin: 15mm;
-            }
+            @page { size: A4; margin: 15mm; }
           }
-
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
-
-          body {
-            font-family: 'Arial', sans-serif;
-            padding: 20px;
-          }
-
-          .header {
-            text-align: center;
-            border-bottom: 3px solid #0abf00;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-          }
-
-          .header h1 {
-            font-size: 28pt;
-            color: #007007;
-            margin-bottom: 10px;
-          }
-
-          .header p {
-            font-size: 14pt;
-            color: #666;
-          }
-
-          .secao-dia {
-            margin-bottom: 30px;
-            page-break-inside: avoid;
-          }
-
-          .titulo-dia {
-            font-size: 18pt;
-            color: #007007;
-            border-bottom: 2px solid #0abf00;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-          }
-
-          .lista-comandas {
-            margin-left: 20px;
-          }
-
-          .item-comanda {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 15px;
-            margin: 5px 0;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-          }
-
-          .total-dia {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 20px;
-            margin-top: 15px;
-            background-color: #0abf00;
-            color: white;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14pt;
-          }
-
-          .resumo-geral {
-            margin-top: 40px;
-            padding: 25px;
-            background-color: #005005;
-            color: white;
-            border-radius: 10px;
-            page-break-inside: avoid;
-          }
-
-          .resumo-geral h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 20pt;
-          }
-
-          .linha-resumo {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            font-size: 13pt;
-          }
-
-          .linha-resumo.total {
-            border-top: 2px solid white;
-            border-bottom: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            font-size: 16pt;
-            font-weight: bold;
-          }
-
-          .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 11pt;
-            color: #666;
-            border-top: 1px solid #ccc;
-            padding-top: 15px;
-          }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: 'Arial', sans-serif; padding: 20px; }
+          .header { text-align: center; border-bottom: 3px solid #0abf00; padding-bottom: 15px; margin-bottom: 30px; }
+          .header h1 { font-size: 28pt; color: #007007; margin-bottom: 10px; }
+          .header p { font-size: 14pt; color: #666; }
+          .secao-dia { margin-bottom: 30px; page-break-inside: avoid; }
+          .titulo-dia { font-size: 18pt; color: #007007; border-bottom: 2px solid #0abf00; padding-bottom: 10px; margin-bottom: 15px; }
+          .lista-comandas { margin-left: 20px; }
+          .item-comanda { display: flex; justify-content: space-between; padding: 8px 15px; margin: 5px 0; background-color: #f5f5f5; border-radius: 5px; }
+          .total-dia { display: flex; justify-content: space-between; padding: 15px 20px; margin-top: 15px; background-color: #0abf00; color: white; border-radius: 8px; font-weight: bold; font-size: 14pt; }
+          .resumo-geral { margin-top: 40px; padding: 25px; background-color: #005005; color: white; border-radius: 10px; page-break-inside: avoid; }
+          .resumo-geral h2 { text-align: center; margin-bottom: 20px; font-size: 20pt; }
+          .linha-resumo { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 13pt; }
+          .linha-resumo.total { border-top: 2px solid white; border-bottom: none; margin-top: 15px; padding-top: 15px; font-size: 16pt; font-weight: bold; }
+          .footer { margin-top: 30px; text-align: center; font-size: 11pt; color: #666; border-top: 1px solid #ccc; padding-top: 15px; }
         </style>
       </head>
       <body>
         <div class="header">
           <h1>RELATÓRIO - TOTAL DO DIA</h1>
-          <p>Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</p>
+          <p>Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
         </div>
-
         ${Object.keys(totaisPorDia)
           .sort((a, b) => {
             const [diaA, mesA, anoA] = a.split('/');
@@ -458,51 +360,18 @@ function TotalDias() {
               </div>
             </div>
           `).join('')}
-
         <div class="resumo-geral">
           <h2>RESUMO GERAL</h2>
-          <div class="linha-resumo">
-            <span>Total de Dias:</span>
-            <span>${Object.keys(totaisPorDia).length}</span>
-          </div>
-          <div class="linha-resumo">
-            <span>Total de Comandas:</span>
-            <span>${Object.values(totaisPorDia).reduce((soma, dia) => soma + dia.comandas.length, 0)}</span>
-          </div>
-          <div class="linha-resumo total">
-            <span>SUBTOTAL GERAL:</span>
-            <span>${formatarValor(totalGeral)}</span>
-          </div>
-          <div class="linha-resumo">
-            <span>Taxa de Serviço (10%):</span>
-            <span>${formatarValor(totalGeral * 0.1)}</span>
-          </div>
-          <div class="linha-resumo">
-            <span>Total com Taxa:</span>
-            <span>${formatarValor(totalComTaxa)}</span>
-          </div>
-          <div class="linha-resumo">
-            <span>Taxa Cartão (5%):</span>
-            <span>${formatarValor(totalComTaxa * 0.05)}</span>
-          </div>
-          <div class="linha-resumo">
-            <span>Total com Cartão:</span>
-            <span>${formatarValor(totalComCartao)}</span>
-          </div>
+          <div class="linha-resumo"><span>Total de Dias:</span><span>${Object.keys(totaisPorDia).length}</span></div>
+          <div class="linha-resumo"><span>Total de Comandas:</span><span>${Object.values(totaisPorDia).reduce((soma, dia) => soma + dia.comandas.length, 0)}</span></div>
+          <div class="linha-resumo total"><span>SUBTOTAL GERAL:</span><span>${formatarValor(totalGeral)}</span></div>
+          <div class="linha-resumo"><span>Taxa de Serviço (10%):</span><span>${formatarValor(totalGeral * 0.1)}</span></div>
+          <div class="linha-resumo"><span>Total com Taxa:</span><span>${formatarValor(totalComTaxa)}</span></div>
+          <div class="linha-resumo"><span>Taxa Cartão (5%):</span><span>${formatarValor(totalComTaxa * 0.05)}</span></div>
+          <div class="linha-resumo"><span>Total com Cartão:</span><span>${formatarValor(totalComCartao)}</span></div>
         </div>
-
-        <div class="footer">
-          <p>Relatório gerado automaticamente pelo Sistema de Comandas</p>
-        </div>
-
-        <script>
-          window.onload = function() {
-            window.print();
-            window.onafterprint = function() {
-              window.close();
-            };
-          };
-        </script>
+        <div class="footer"><p>Relatório gerado automaticamente pelo Sistema de Comandas</p></div>
+        <script>window.onload = function() { window.print(); window.onafterprint = function() { window.close(); }; };</script>
       </body>
       </html>
     `;
@@ -554,19 +423,9 @@ function TotalDias() {
                 <LabelResumo> Com Cartão (5%):</LabelResumo>
                 <ValorResumo> {formatarValor(totalComCartao)}</ValorResumo>
               </LinhaResumo>
-              
+
               <BotaoImprimir onClick={imprimirRelatorio}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="6 9 6 2 18 2 18 9" />
                   <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
                   <rect x="6" y="14" width="12" height="8" />

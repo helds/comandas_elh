@@ -626,9 +626,13 @@ function Principal() {
     }
   };
 
-  const deletarComanda = async (idParaDeletar) => {
+  const deletarComanda = async (idParaDeletar, { manterProdutos = false } = {}) => {
     await excluirCliente(idParaDeletar);
-    localStorage.removeItem(`comanda_${idParaDeletar}`);
+    // Só apaga os produtos do localStorage se NÃO estiver arquivando.
+    // Ao arquivar, os produtos precisam continuar existindo para a aba de arquivos.
+    if (!manterProdutos) {
+      localStorage.removeItem(`comanda_${idParaDeletar}`);
+    }
   };
 
   const handleEditar = (comanda) => {
@@ -661,12 +665,27 @@ function Principal() {
     setMenuPrincipalAberto(!menuPrincipalAberto);
   };
 
-  const handleArquivar = (comanda) => {
+  const handleArquivar = async (comanda) => {
     if (window.confirm(`Deseja arquivar a comanda "${comanda.nome}"?`)) {
+      const chaveProdutos = `comanda_${comanda.id}`;
+      const produtosSalvos = localStorage.getItem(chaveProdutos);
+      const produtos = produtosSalvos ? JSON.parse(produtosSalvos) : [];
+
+      // Salva na lista de arquivadas ANTES de qualquer delete
       const comandasArquivadas = JSON.parse(localStorage.getItem('comandasArquivadas') || '[]');
       comandasArquivadas.push({ ...comanda, dataArquivamento: new Date().toISOString() });
       localStorage.setItem('comandasArquivadas', JSON.stringify(comandasArquivadas));
-      deletarComanda(comanda.id);
+
+      // Passa manterProdutos:true para NÃO apagar a chave comanda_${id} do localStorage.
+      // O onSnapshot do Firebase também não deve apagar — por isso não chamamos
+      // localStorage.removeItem aqui de forma alguma.
+      await deletarComanda(comanda.id, { manterProdutos: true });
+
+      // Garante que os produtos estão salvos e limpa o campo `pago` de todas as linhas
+      if (produtos.length > 0) {
+        const produtosLimpos = produtos.map(l => ({ ...l, pago: false }));
+        localStorage.setItem(chaveProdutos, JSON.stringify(produtosLimpos));
+      }
     }
   };
 
