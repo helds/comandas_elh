@@ -6,8 +6,8 @@ export const cardapio = [
   // Bebidas não alcoólicas
   { id: 8, nome: 'Refri Lata', preco: 6.00, categoria: 'Bebidas' },
   { id: 10, nome: 'Refri. 1L', preco: 7.00, categoria: 'Bebidas' },
-  { id: 11, nome: 'Refri. 1L Coca-Cola', preco: 8.00, categoria: 'Bebidas' },
-  { id: 111, nome: 'Refri. 1L Coca-Cola Zero', preco: 10.00, categoria: 'Bebidas' },
+  { id: 11, nome: 'Refri. 1L - Coca-Cola', preco: 8.00, categoria: 'Bebidas' },
+  { id: 111, nome: 'Refri. 1L - Coca-Cola Zero', preco: 10.00, categoria: 'Bebidas' },
   { id: 12, nome: 'Água s/ gás 500ml', preco: 3.00, categoria: 'Bebidas' },
   { id: 13, nome: 'Água c/ gás 500ml', preco: 4.00, categoria: 'Bebidas' },
   { id: 15, nome: 'Suco', preco: 7.00, categoria: 'Bebidas' },
