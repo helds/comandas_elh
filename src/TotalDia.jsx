@@ -399,7 +399,7 @@ function TotalDias() {
     const totalDia = totaisPorDia[dia]?.total || 0;
 
     const linhasProdutos = Object.entries(produtos)
-      .sort((a, b) => b[1].total - a[1].total) // ordena por maior valor
+      .sort((a, b) => a[0].localeCompare(b[0], 'pt-BR')) // ordena alfabeticamente
       .map(([nome, dados], i) => `
         <tr class="${i % 2 === 0 ? 'par' : 'impar'}">
           <td class="nome">${nome}</td>
@@ -612,11 +612,11 @@ function TotalDias() {
       });
     });
 
-    // Ordena meses cronologicamente
+    // Ordena meses do mais recente ao mais antigo
     const mesesOrdenados = Object.keys(produtosPorMes).sort((a, b) => {
       const [mA, aA] = a.split('/');
       const [mB, aB] = b.split('/');
-      return new Date(aA, mA - 1) - new Date(aB, mB - 1);
+      return new Date(aB, mB - 1) - new Date(aA, mA - 1);
     });
 
     // Total geral de tudo
@@ -632,7 +632,7 @@ function TotalDias() {
       const totalMes = Object.values(produtos).reduce((s, p) => s + p.total, 0);
 
       const linhas = Object.entries(produtos)
-        .sort((a, b) => b[1].total - a[1].total)
+        .sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'))
         .map(([nome, dados], i) => `
           <tr class="${i % 2 === 0 ? 'par' : 'impar'}">
             <td class="nome">${nome}</td>
