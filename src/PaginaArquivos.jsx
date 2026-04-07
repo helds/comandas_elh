@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import VoltarIcon from './assets/voltar.svg?react';
 import IconeBolaP from './assets/iconeBolaP.svg?react';
 
+import { db } from './firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+
 // --- Styled Components ---
 
 const Fundo = styled.div`
@@ -220,11 +223,16 @@ function PaginaArquivos() {
     setMenuAbertoId(menuAbertoId === comandaId ? null : comandaId);
   };
 
-  const desarquivarComanda = (comandaParaDesarquivar) => {
-    const comandasAtivas = JSON.parse(localStorage.getItem('comandas') || '[]');
-    const novasAtivas = [...comandasAtivas, { id: comandaParaDesarquivar.id, nome: comandaParaDesarquivar.nome }];
-    localStorage.setItem('comandas', JSON.stringify(novasAtivas));
+  const desarquivarComanda = async (comandaParaDesarquivar) => {
+    // Recria a comanda no Firestore — sem isso ela nunca aparece na tela principal,
+    // pois a lista de comandas vem do onSnapshot do Firebase, não do localStorage.
+    await setDoc(doc(db, 'mesas', comandaParaDesarquivar.id), {
+      nome: comandaParaDesarquivar.nome,
+      hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      criadoEm: serverTimestamp(),
+    });
 
+    // Remove da lista de arquivadas
     const novasArquivadas = arquivadas.filter(c => c.id !== comandaParaDesarquivar.id);
     localStorage.setItem('comandasArquivadas', JSON.stringify(novasArquivadas));
     setArquivadas(novasArquivadas);
