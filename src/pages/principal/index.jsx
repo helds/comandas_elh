@@ -599,7 +599,7 @@ function Principal() {
   const [menuPrincipalAberto, setMenuPrincipalAberto] = useState(false);
 
   // 🔥 FIREBASE — comandas
-  const { listaClientes: comandas, criarCliente, excluirCliente } = useClientes();
+  const { listaClientes: comandas, criarCliente, excluirCliente, atualizarCliente } = useClientes();
 
   // 🔥 FIREBASE — fila de impressão do garçom
   const { impressoes, marcarImpresso } = useImpressao();
@@ -641,8 +641,14 @@ function Principal() {
     setMenuAbertoId(null);
   };
 
-  const salvarEdicao = () => {
+  const salvarEdicao = async () => {
     if (!editingId || novoNome.trim() === '') return;
+    try {
+      await atualizarCliente(editingId, novoNome.trim());
+    } catch (error) {
+      console.error("Erro ao renomear:", error);
+      alert("Falha ao renomear a comanda!");
+    }
     setEditingId(null);
   };
 

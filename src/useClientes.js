@@ -9,6 +9,7 @@ import {
   doc,
   setDoc,
   deleteDoc,
+  updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 
@@ -56,5 +57,12 @@ export function useClientes() {
     await deleteDoc(doc(db, COLECAO_MESAS, id));
   };
 
-  return { listaClientes, criarCliente, excluirCliente };
+  // Renomear comanda/cliente pelo site
+  const atualizarCliente = async (id, novoNome) => {
+    await updateDoc(doc(db, COLECAO_MESAS, id), {
+      nome: novoNome.trim(),
+    });
+  };
+
+  return { listaClientes, criarCliente, excluirCliente, atualizarCliente };
 }
