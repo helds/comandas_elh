@@ -1,4 +1,5 @@
 export const cardapio = [
+  { id: 0, nome: '', preco: 0.01, categoria: 'Serviços' },
   // Serviços
   { id: 1, nome: 'Uso das Piscinas', preco: 8.00, categoria: 'Serviços' },
   { id: 2, nome: 'Day Use', preco: 15.00, categoria: 'Serviços' },
