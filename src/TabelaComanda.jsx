@@ -53,7 +53,6 @@ const Corpo = styled.tbody`
   }
 `;
 
-/* ✅ FIX 3: Linha que recebe prop `pago` — fica opaca e tachada */
 const TrLinha = styled.tr`
   position: relative;
   opacity: ${(props) => (props.$pago ? 0.38 : 1)};
@@ -68,7 +67,6 @@ const CorpoCell = styled.td`
   font-size: 23pt;
   white-space: nowrap;
   text-overflow: ellipsis;
-  /* ✅ FIX 3: Tachado aplicado via classe no tr pai */
   text-decoration: inherit;
 
   &:last-child {
@@ -99,17 +97,14 @@ const CorpoCell = styled.td`
   }
 `;
 
-/* ✅ FIX 3: Célula do valor total — precisa de position relative pro botão */
 const CellValorTotal = styled(CorpoCell)`
   position: relative;
 `;
 
-/* ✅ FIX 3: Texto do valor total — tachado quando pago */
 const TextoValorTotal = styled.span`
   text-decoration: ${(props) => (props.$pago ? 'line-through' : 'none')};
 `;
 
-/* ✅ FIX 3: Botão ✅ — só aparece no hover da linha, posicionado no canto direito */
 const BotaoPago = styled.button`
   position: absolute;
   right: 6px;
@@ -122,20 +117,13 @@ const BotaoPago = styled.button`
   padding: 2px 4px;
   line-height: 1;
   border-radius: 4px;
-  /* Fade-in suave ao aparecer */
   animation: fadeIn 0.2s ease forwards;
   transition: transform 0.15s ease, background-color 0.15s ease;
   filter: none;
 
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-50%) scale(0.7);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(-50%) scale(1);
-    }
+    from { opacity: 0; transform: translateY(-50%) scale(0.7); }
+    to   { opacity: 1; transform: translateY(-50%) scale(1); }
   }
 
   &:hover {
@@ -184,7 +172,7 @@ const SugestaoItem = styled.li`
     background-color: #0abf00;
     color: #fffef7;
     font-weight: bold;
-    
+
     &:hover {
       background-color: #0abf00;
     }
@@ -193,71 +181,27 @@ const SugestaoItem = styled.li`
 
 /* ---------- Componente principal ---------- */
 
-function TabelaComanda({ onTotalChange, comandaId }) {
-  const TOTAL_LINHAS = 80;
-
+function TabelaComanda({ comandaId, linhasCompartilhadas, setLinhasEPersistir }) {
   const linhaVazia = { cod: '', quant: '', produto: '', valorUnit: '', pago: false };
 
-  const carregarDados = () => {
-    if (!comandaId) return Array.from({ length: TOTAL_LINHAS }, () => ({ ...linhaVazia }));
+  // 2. APAGUE o useTabelaComandaSync daqui e use as linhas do componente pai:
+  const linhas = linhasCompartilhadas;
 
-    try {
-      const chave = `comanda_${comandaId}`;
-      const dadosSalvos = localStorage.getItem(chave);
-
-      if (dadosSalvos) {
-        const dadosParseados = JSON.parse(dadosSalvos);
-        if (dadosParseados.length === TOTAL_LINHAS) {
-          // ✅ FIX 3: Garante que todas as linhas têm o campo `pago` (compatibilidade retroativa)
-          return dadosParseados.map(l => ({ pago: false, ...l }));
-        }
-      }
-    } catch (erro) {
-      console.error('Erro ao carregar dados do localStorage:', erro);
-    }
-
-    return Array.from({ length: TOTAL_LINHAS }, () => ({ ...linhaVazia }));
-  };
-
-  const [linhas, setLinhas] = useState(carregarDados);
-
-  const [linhaAtivaIndex, setLinhaAtivaIndex] = useState(null);
-  const [editingCell, setEditingCell] = useState(null);
+  const [linhaAtivaIndex, setLinhaAtivaIndex]             = useState(null);
+  const [editingCell, setEditingCell]                     = useState(null);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(0);
-  // ✅ FIX 3: Controla qual linha está com mouse em cima
-  const [linhaHover, setLinhaHover] = useState(null);
+  const [linhaHover, setLinhaHover]                       = useState(null);
 
   const { termoBusca, setTermoBusca, resultadosFiltrados } = useFiltroBusca(cardapio);
 
-  const inputRef = useRef(null);
-  const sugestoesRef = useRef(null);
+  const inputRef       = useRef(null);
+  const sugestoesRef   = useRef(null);
   const blurTimeoutRef = useRef(null);
 
-  // Salva no localStorage sempre que as linhas mudarem
-  useEffect(() => {
-    if (!comandaId) return;
-    try {
-      const chave = `comanda_${comandaId}`;
-      localStorage.setItem(chave, JSON.stringify(linhas));
-    } catch (erro) {
-      console.error('Erro ao salvar dados no localStorage:', erro);
-    }
-  }, [linhas, comandaId]);
+  // 3. O useEffect que calculava o Total foi removido daqui! 
+  // O componente pai (ComandaDetalhe) já está fazendo esse cálculo.
 
-  // ✅ FIX 3: Calcula o total EXCLUINDO linhas marcadas como pagas
-  useEffect(() => {
-    const total = linhas.reduce((soma, linha) => {
-      if (linha.pago) return soma; // ignora itens pagos
-      const quantidade = parseFloat(linha.quant) || 0;
-      const valor = parseFloat(linha.valorUnit) || 0;
-      return soma + quantidade * valor;
-    }, 0);
-    if (onTotalChange) onTotalChange(total);
-  }, [linhas, onTotalChange]);
-
-  useEffect(() => {
-    setSelectedSuggestionIndex(0);
-  }, [resultadosFiltrados]);
+  useEffect(() => { setSelectedSuggestionIndex(0); }, [resultadosFiltrados]);
 
   useEffect(() => {
     if (sugestoesRef.current && resultadosFiltrados.length > 0) {
@@ -268,6 +212,7 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     }
   }, [selectedSuggestionIndex, resultadosFiltrados]);
 
+  // ── Teclado no autocomplete ───────────────────────────────────────────────
   const handleKeyDown = (e, i) => {
     if (linhaAtivaIndex === i && resultadosFiltrados.length > 0) {
       switch (e.key) {
@@ -296,18 +241,22 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     }
   };
 
+  // ── Ações nas linhas ──────────────────────────────────────────────────────
+  
+  // 4. Substitua "setLinhas" por "setLinhasEPersistir" em todas as funções abaixo:
+  
   const limparLinha = (i) => {
-    setLinhas((old) => old.map((l, idx) => (idx === i ? { ...linhaVazia } : l)));
+    setLinhasEPersistir((old) => old.map((l, idx) => (idx === i ? { ...linhaVazia } : l)));
     if (linhaAtivaIndex === i) setTermoBusca('');
     setLinhaAtivaIndex(i);
   };
 
   const atualizarCelula = (i, campo, valor) => {
-    setLinhas((old) => old.map((l, idx) => (idx === i ? { ...l, [campo]: valor } : l)));
+    setLinhasEPersistir((old) => old.map((l, idx) => (idx === i ? { ...l, [campo]: valor } : l)));
   };
 
   const selecionarProduto = (i, produto) => {
-    setLinhas((old) =>
+    setLinhasEPersistir((old) =>
       old.map((l, idx) =>
         idx === i
           ? { ...l, produto: produto.nome, cod: produto.id, valorUnit: produto.preco, quant: l.quant || 1 }
@@ -319,18 +268,18 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     setSelectedSuggestionIndex(0);
   };
 
-  // ✅ FIX 3: Alterna o estado `pago` de uma linha
   const togglePago = (i) => {
-    setLinhas((old) =>
+    setLinhasEPersistir((old) =>
       old.map((l, idx) => (idx === i ? { ...l, pago: !l.pago } : l))
     );
   };
 
+  // ── Colunas ───────────────────────────────────────────────────────────────
   const colunas = useMemo(
     () => [
-      { accessorKey: 'cod', header: 'CÓD.', size: '8%' },
-      { accessorKey: 'quant', header: 'QUANT.', size: '10%' },
-      { accessorKey: 'produto', header: 'PRODUTO', size: '50%' },
+      { accessorKey: 'cod',       header: 'CÓD.',        size: '8%' },
+      { accessorKey: 'quant',     header: 'QUANT.',      size: '10%' },
+      { accessorKey: 'produto',   header: 'PRODUTO',     size: '50%' },
       { accessorKey: 'valorUnit', header: 'VALOR UNIT.', size: '12%' },
       {
         id: 'valorTotal',
@@ -354,6 +303,7 @@ function TabelaComanda({ onTotalChange, comandaId }) {
     getCoreRowModel: getCoreRowModel(),
   });
 
+  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <TabelaContainer>
       <TabelaEstilizada>
@@ -376,7 +326,6 @@ function TabelaComanda({ onTotalChange, comandaId }) {
             const mostrarBotao = linhaHover === i && temProduto;
 
             return (
-              // ✅ FIX 3: TrLinha recebe $pago e $ativa; eventos de hover controlam linhaHover
               <TrLinha
                 key={row.id}
                 $pago={linha.pago}
@@ -385,8 +334,8 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                 onMouseLeave={() => setLinhaHover(null)}
               >
                 {row.getVisibleCells().map((cell) => {
-                  const colId = cell.column.id;
-                  const isTotal = colId === 'valorTotal';
+                  const colId  = cell.column.id;
+                  const isTotal   = colId === 'valorTotal';
                   const isEditing = editingCell?.rowIndex === i && editingCell?.colId === colId;
 
                   if (colId === 'valorUnit') {
@@ -464,7 +413,6 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                     );
                   }
 
-                  // ✅ FIX 3: Coluna "VALOR TOTAL" — renderiza botão ✅ no hover
                   if (isTotal) {
                     return (
                       <CellValorTotal key={cell.id}>
@@ -476,7 +424,6 @@ function TabelaComanda({ onTotalChange, comandaId }) {
                           <BotaoPago
                             title={linha.pago ? 'Desmarcar como pago' : 'Marcar como pago'}
                             onMouseDown={(e) => {
-                              // onMouseDown evita que o blur do input dispare antes do clique
                               e.preventDefault();
                               togglePago(i);
                             }}

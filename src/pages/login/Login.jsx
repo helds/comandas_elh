@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 
-const EMAIL_COMANDAS = 'comandas@elhonorato.com';
+const EMAIL_COMANDAS = import.meta.env.VITE_FIREBASE_EMAIL;
 
 const Login = () => {
   const [pin, setPin] = useState('');

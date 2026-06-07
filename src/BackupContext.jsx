@@ -180,7 +180,7 @@ ${comandas.map(comanda => `
     ultimoHashMonitoradoRef.current = gerarHash(dados);
 
     // Verifica mudanças a cada 500ms
-    const intervalo = setInterval(verificarMudancas, 500);
+    const intervalo = setInterval(verificarMudancas, 5000);
 
     return () => {
       clearInterval(intervalo);

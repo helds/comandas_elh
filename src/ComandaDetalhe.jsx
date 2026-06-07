@@ -1,7 +1,4 @@
-// ComandaDetalhe.jsx — ATUALIZADO com integração Firebase
-// Alterações marcadas com // 🔥 FIREBASE
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { useLocation } from 'react-router-dom';
 import TabelaComanda from './TabelaComanda';
@@ -12,87 +9,71 @@ import VoltarIcon from '././assets/voltar.svg?react';
 // 🔥 FIREBASE — imports novos
 import { usePedidosGarcom } from './usePedidosGarcom';
 import NotificacaoGarcom from './NotificacaoGarcom';
+import { useTabelaComandaSync } from './useTabelaComandaSync'; 
 
 const ComandaDetalhe = () => {
   const location = useLocation();
-  const nomeCliente = location.state?.nome || localStorage.getItem("nome_cliente_atual") || "Cliente";
   const comandaId = location.pathname.split("/").pop();
+  const nomeCliente = location.state?.nome || localStorage.getItem("nome_cliente_atual") || "Cliente";
 
   const [mostrarNotificacao, setMostrarNotificacao] = useState(false);
 
-  const [totalComanda, setTotalComanda] = useState(0);
-  const [linhasComanda, setLinhasComanda] = useState([]);
+  // 1º PRIMEIRO: Chamamos o hook para pegar as linhas do Firebase
+  const { linhas, setLinhas, carregando } = useTabelaComandaSync(comandaId);
+  
+  // 2º SEGUNDO: Calculamos o total da comanda
+  const totalComanda = useMemo(() => {
+    if (!linhas) return 0;
+    return linhas.reduce((soma, linha) => {
+      if (linha.pago || !linha.produto || !linha.quant || !linha.valorUnit) return soma;
+      return soma + (parseFloat(linha.quant) || 0) * (parseFloat(linha.valorUnit) || 0);
+    }, 0);
+  }, [linhas]);
 
   // 🔥 FIREBASE — escuta pedidos do garçom em tempo real
   const pedidosGarcom = usePedidosGarcom(comandaId);
 
   // 🔥 FIREBASE — callback chamado quando o cliente aceita um item do garçom
-  // Encontra a primeira linha vazia da comanda e preenche com o item
   const adicionarItemNaComanda = useCallback((item) => {
     if (!comandaId) return;
 
-    try {
-      const chave = `comanda_${comandaId}`;
-      const dadosSalvos = localStorage.getItem(chave);
-      const linhas = dadosSalvos ? JSON.parse(dadosSalvos) : [];
+    setLinhas((linhasAtuais) => {
+      const novasLinhas = [...linhasAtuais];
 
       if (item._merge) {
-        const idx = linhas.findIndex((l) => String(l.cod) === String(item.cod));
+        const idx = novasLinhas.findIndex((l) => String(l.cod) === String(item.cod));
         if (idx !== -1) {
-          linhas[idx].quant = String(Number(linhas[idx].quant) + Number(item.quantidade));
-          localStorage.setItem(chave, JSON.stringify(linhas));
-          setRefreshKey((k) => k + 1);
-          return; // para aqui, não cria nova linha
+          novasLinhas[idx] = {
+            ...novasLinhas[idx],
+            quant: String(Number(novasLinhas[idx].quant) + Number(item.quantidade || 1))
+          };
+          return novasLinhas;
         }
       }
 
-      // Procura a primeira linha vazia
-      const primeiraVaziaIdx = linhas.findIndex(
-        (l) => !l.produto && !l.cod && !l.quant
-      );
+      const indexVazio = novasLinhas.findIndex(l => !l.produto || l.produto === '');
 
-      if (primeiraVaziaIdx === -1) {
+      if (indexVazio !== -1) {
+        novasLinhas[indexVazio] = {
+          cod: String(item.cod || ''),
+          produto: item.nome || item.produto || '',
+          valorUnit: String(item.preco || item.valorUnit || ''),
+          quant: String(item.quantidade || item.quant || 1),
+          pago: false
+        };
+      } else {
         console.warn("Sem linhas vazias na comanda para inserir o item.");
-        return;
       }
 
-      // Preenche a linha com os dados vindos do app do garçom
-      linhas[primeiraVaziaIdx] = {
-        cod: String(item.cod || ''),
-        quant: String(item.quantidade || 1),
-        produto: item.nome || '',
-        valorUnit: String(item.valorUnit || ''),
-      };
-
-      localStorage.setItem(chave, JSON.stringify(linhas));
-
-      // Força o TabelaComanda a recarregar lendo do localStorage
-      // Fazemos isso via um estado auxiliar que serve como "sinal de refresh"
-      setRefreshKey((k) => k + 1);
-    } catch (e) {
-      console.error("Erro ao adicionar item na comanda:", e);
-    }
-  }, [comandaId]);
-
-  // 🔥 FIREBASE — chave de refresh para forçar TabelaComanda recarregar
-  const [refreshKey, setRefreshKey] = useState(0);
+      return novasLinhas;
+    });
+  }, [comandaId, setLinhas]);
 
   useEffect(() => {
     if (location.state?.nome) {
       localStorage.setItem("nome_cliente_atual", location.state.nome);
     }
   }, [location.state]);
-
-  useEffect(() => {
-    if (!comandaId) return;
-    try {
-      const chave = `comanda_${comandaId}`;
-      const dadosSalvos = localStorage.getItem(chave);
-      if (dadosSalvos) setLinhasComanda(JSON.parse(dadosSalvos));
-    } catch (erro) {
-      console.error('Erro ao carregar dados para impressão:', erro);
-    }
-  }, [comandaId, totalComanda]);
 
   const formatarValor = (valor) => Number(valor || 0).toFixed(2).replace('.', ',');
 
@@ -103,7 +84,8 @@ const ComandaDetalhe = () => {
         <NotificacaoGarcom
           comandaId={comandaId}
           pedidos={pedidosGarcom}
-          comanda={linhasComanda}        // ✅ adiciona isso
+          // ✅ FIX 1: Usa `linhas` (do hook) em vez de `linhasComanda` (que não existia)
+          comanda={linhas}
           onAdicionar={adicionarItemNaComanda}
         />
       )}
@@ -116,13 +98,11 @@ const ComandaDetalhe = () => {
         </LadoBarra>
         <Titulo>{nomeCliente.toUpperCase()}</Titulo>
         <LadoBarraDireito>
-          {/* 👇 NOVO BOTÃO DE SINO ADICIONADO AQUI 👇 */}
           <BotaoSino onClick={() => setMostrarNotificacao(!mostrarNotificacao)}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="45" height="45" fill="#fff">
               <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
             </svg>
 
-            {/* Ponto vermelho se houver pedidos */}
             {pedidosGarcom.length > 0 && (
               <span
                 style={{
@@ -138,22 +118,24 @@ const ComandaDetalhe = () => {
             )}
           </BotaoSino>
 
+          {/* ✅ FIX 1: Usa `linhas` em vez de `linhasComanda` */}
           <ImpressaoNotaFiscal
             nomeCliente={nomeCliente}
             comandaId={comandaId}
-            linhas={linhasComanda}
+            linhas={linhas}
             totalComanda={totalComanda}
           />
         </LadoBarraDireito>
       </Barra>
 
       <TabelaContainer>
-        {/* 🔥 FIREBASE — refreshKey faz a tabela recarregar do localStorage quando um item é aceito */}
-        <TabelaComanda
-          key={refreshKey}
-          onTotalChange={setTotalComanda}
-          comandaId={comandaId}
-        />
+        {!carregando && (
+          <TabelaComanda
+            comandaId={comandaId}
+            linhasCompartilhadas={linhas}
+            setLinhasEPersistir={setLinhas}
+          />
+        )}
       </TabelaContainer>
 
       <SvgStyled xmlns="http://www.w3.org/2000/svg" viewBox={'0 0 1920 1080'} style={{ zIndex: 999 }}>
@@ -181,7 +163,7 @@ const ComandaDetalhe = () => {
 
 export default ComandaDetalhe;
 
-/* ---------- estilos (sem alterações) ---------- */
+/* ---------- estilos ---------- */
 
 const Container = styled.div`
   width: 100%;
@@ -299,4 +281,4 @@ const BotaoSino = styled.button`
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
-  `;
+`;
