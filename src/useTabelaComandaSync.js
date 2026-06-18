@@ -8,7 +8,7 @@
 // Estratégia:
 //   1. Ao montar: lê localStorage imediatamente (sem esperar rede)
 //   2. onSnapshot: sempre que o Firestore mudar, atualiza estado + localStorage
-//   3. Ao editar: salva no localStorage imediatamente + agenda save no Firestore (debounce 800ms)
+//   3. Ao editar: salva no localStorage imediatamente + agenda save no Firestore (debounce 400ms)
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { db } from './firebase';
@@ -16,7 +16,7 @@ import { doc, onSnapshot, setDoc, serverTimestamp } from 'firebase/firestore';
 
 const TOTAL_LINHAS = 80;
 const COLECAO      = 'comanda_itens';
-const DEBOUNCE_MS  = 800;
+const DEBOUNCE_MS  = 400;
 
 const linhaVazia = () => ({ cod: '', quant: '', produto: '', valorUnit: '', pago: false });
 
