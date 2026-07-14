@@ -397,6 +397,11 @@ const gerarNotaFiscal = (nomeCliente, comandaId, linhas, totalComanda) => {
             padding: 1px 0;
           }
 
+          .item.pago {
+            text-decoration: line-through;
+            opacity: 0.55;
+          }
+
           .item-info {
             flex: 1;
           }
@@ -493,7 +498,7 @@ const gerarNotaFiscal = (nomeCliente, comandaId, linhas, totalComanda) => {
               const total = quantidade * valorUnit;
 
               return `
-                <div class="item">
+                <div class="item ${linha.pago ? 'pago' : ''}">
                   <div class="item-info">
                     <div class="item-nome">${linha.produto}</div>
                     <div class="item-detalhes">

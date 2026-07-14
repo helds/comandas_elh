@@ -1,5 +1,7 @@
 export const cardapio = [
+  
   { id: 0, nome: '', preco: 0.01, categoria: 'Serviços' },
+
   // Serviços
   { id: 1, nome: 'Uso das Piscinas', preco: 8.00, categoria: 'Serviços' },
   { id: 2, nome: 'Day Use', preco: 15.00, categoria: 'Serviços' },
@@ -22,8 +24,8 @@ export const cardapio = [
   { id: 21, nome: 'Ice Long Neck', preco: 10.00, categoria: 'Bebidas Alcoólicas' },
   { id: 22, nome: 'Dose de Pitú 100ml', preco: 3.00, categoria: 'Bebidas Alcoólicas' },
   { id: 23, nome: 'Dose de Pitú 200ml', preco: 5.00, categoria: 'Bebidas Alcoólicas' },
-  { id: 24, nome: 'Dose Conhaque 200ml', preco: 4.00, categoria: 'Bebidas Alcoólicas' },
-  { id: 25, nome: 'Dose Conhaque c/ ML', preco: 6.00, categoria: 'Bebidas Alcoólicas' },
+  { id: 24, nome: 'Dose Conhaque 200ml', preco: 6.00, categoria: 'Bebidas Alcoólicas' },
+  { id: 25, nome: 'Dose Conhaque c/ Mel e Limão', preco: 8.00, categoria: 'Bebidas Alcoólicas' },
   { id: 26, nome: 'Taça Vinho Quinta', preco: 4.00, categoria: 'Bebidas Alcoólicas' },
   { id: 80, nome: 'Vinho Quinta do Morgado', preco: 20.00, categoria: 'Bebidas Alcoólicas' },
   { id: 83, nome: 'Montilla', preco: 23.00, categoria: 'Bebidas Alcoólicas' },

@@ -116,7 +116,7 @@ function Inter() {
 
   // **MUDANÇA 2: Cálculos baseados no estado**
   const totalComServico = totalComanda * 1.10;
-  const totalComCartao = totalComServico * 1.05;
+  const totalComCartao = totalComanda * 1.05;
 
   // Função para formatar os números no padrão brasileiro (ex: 200,00)
   const formatarValor = (valor) => {
@@ -152,7 +152,6 @@ function Inter() {
           pointer-events="none"
         >
           <tspan>VALOR TOTAL:</tspan>
-          <tspan x="950" dy="40">VALOR C/ TAXA DE SERVIÇO (10%):</tspan>
           <tspan x="950" dy="40">VALOR C/ CARTÃO (5%):</tspan>
         </text>
 
@@ -168,7 +167,6 @@ function Inter() {
         >
           <tspan>R$</tspan>
           <tspan x="1665" dy="40">R$</tspan>
-          <tspan x="1665" dy="40">R$</tspan>
         </text>
 
         {/* **MUDANÇA 3: Substituir valores fixos pelos valores do estado** */}
@@ -183,7 +181,6 @@ function Inter() {
           pointer-events="none"
         >
           <tspan>{formatarValor(totalComanda)}</tspan>
-          <tspan x="1725" dy="40">{formatarValor(totalComServico)}</tspan>
           <tspan x="1725" dy="40">{formatarValor(totalComCartao)}</tspan>
         </text>
 
