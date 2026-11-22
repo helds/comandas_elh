@@ -53,7 +53,7 @@ export const cardapio = [
   { id: 33, nome: 'Pastelzinho', preco: 10.00, categoria: 'Petiscos' },
   { id: 35, nome: 'Batata Frita', preco: 15.00, categoria: 'Petiscos' },
   { id: 36, nome: 'Linguiça Acebolada', preco: 25.00, categoria: 'Petiscos' },
-  { id: 37, nome: 'Queijo Coalho', preco: 12.00, categoria: 'Petiscos' },
+  { id: 37, nome: 'Queijo Coalho', preco: 15.00, categoria: 'Petiscos' },
   { id: 38, nome: 'Frango Acebolado', preco: 30.00, categoria: 'Petiscos' },
   { id: 39, nome: 'Isca de Frango', preco: 20.00, categoria: 'Petiscos' },
   { id: 40, nome: 'Isca de Peixe', preco: 27.00, categoria: 'Petiscos' },
@@ -62,15 +62,14 @@ export const cardapio = [
   { id: 45, nome: 'Peixe Frito - Cavala', preco: 45.00, categoria: 'Petiscos' },
 
   // Almoço
-  { id: 50, nome: 'Frango Acebolado - Almoço', preco: 65.00, categoria: 'Almoço' },
-  { id: 51, nome: 'Frango à Milanesa - Almoço', preco: 70.00, categoria: 'Almoço' },
-  { id: 52, nome: 'Frango à Parmegiana - Almoço', preco: 75.00, categoria: 'Almoço' },
-  { id: 53, nome: 'Carne do Sol - Almoço', preco: 80.00, categoria: 'Almoço' },
-  { id: 54, nome: 'Bife à Milanesa - Almoço', preco: 80.00, categoria: 'Almoço' },
-  { id: 55, nome: 'Bife à Parmegiana - Almoço', preco: 85.00, categoria: 'Almoço' },
-  { id: 56, nome: 'Filé de Tilápia - Almoço', preco: 80.00, categoria: 'Almoço' },
-  { id: 57, nome: 'Tilápia à Milanesa - Almoço', preco: 85.00, categoria: 'Almoço' },
-  { id: 58, nome: 'Peixe Frito (Cavala) - Almoço', preco: 90.00, categoria: 'Almoço' },
+  { id: 50, nome: 'Frango Acebolado - Almoço', preco: 70.00, categoria: 'Almoço' },
+  { id: 51, nome: 'Frango à Milanesa - Almoço', preco: 80.00, categoria: 'Almoço' },
+  { id: 52, nome: 'Frango à Parmegiana - Almoço', preco: 85.00, categoria: 'Almoço' },
+  { id: 53, nome: 'Carne do Sol - Almoço', preco: 90.00, categoria: 'Almoço' },
+  { id: 54, nome: 'Bife à Milanesa - Almoço', preco: 90.00, categoria: 'Almoço' },
+  { id: 55, nome: 'Bife à Parmegiana - Almoço', preco: 95.00, categoria: 'Almoço' },
+  { id: 56, nome: 'Filé de Tilápia - Almoço', preco: 90.00, categoria: 'Almoço' },
+  { id: 57, nome: 'Peixe Frito (Cavala) - Almoço', preco: 100.00, categoria: 'Almoço' },
 
   // Acompanhamentos
   { id: 60, nome: 'Vinagrete', preco: 7.00, categoria: 'Acompanhamentos' },
